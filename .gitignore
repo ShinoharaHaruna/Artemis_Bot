@@ -1,0 +1,41 @@
+# 忽略编译生成的文件和目录
+build/
+dist/
+*.exe
+*.dll
+*.so
+*.dylib
+
+# 忽略依赖管理工具生成的目录
+node_modules/
+vendor/
+
+# 忽略IDE和编辑器生成的文件和目录
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# 忽略操作系统生成的文件和目录
+.DS_Store
+Thumbs.db
+
+# 忽略日志文件
+*.log
+
+# 忽略敏感信息配置文件
+config.ini
+secrets.yaml
+
+# 忽略临时文件
+*.tmp
+*.bak
+*.swp
+
+# 忽略__pycache__目录
+__pycache__/
+
+# 一些不要的文件
+nohup.out
+response_example.json
+config.yaml

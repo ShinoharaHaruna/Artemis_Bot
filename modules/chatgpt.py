@@ -1,4 +1,5 @@
 import requests
+import yaml
 
 
 def get_chatbot_response(message, API_KEY):
@@ -23,10 +24,39 @@ def get_chatbot_response(message, API_KEY):
     return chatbot_response
 
 
-def handle_message(bot, chat_id, message, API_KEY):
+def handle_message(bot, chat_id, message, API_KEY, message_id):
     # 处理用户消息的逻辑
     chatbot_response = get_chatbot_response(message, API_KEY)
     # 发送ChatGPT的回复
     bot.send_message(
-        chat_id=chat_id, text=chatbot_response, parse_mode='Markdown'
+        chat_id=chat_id,
+        text=chatbot_response,
+        parse_mode="Markdown",
+        reply_to_message_id=message_id,
     )
+
+
+def chat_command(update, context):
+    with open("config.yaml", "r") as file:
+        config = yaml.safe_load(file)
+    MASTER_ID = config["Basic"]["MASTER_ID"]
+    GROUP_CHAT_ID = config["GroupChat"][0][0]
+    OPENAI_API_KEY = config["OpenAI"]["OPENAI_API_KEY"]
+    message = " ".join(context.args)  # 获取命令后的字符串作为message
+    if (
+        update.message.from_user.id != MASTER_ID
+        and update.effective_chat.id != GROUP_CHAT_ID
+    ):
+        context.bot.send_message(
+            chat_id=update.effective_chat.id,
+            text="Sorry喇，呢個係channel only嘅",
+            reply_to_message_id=update.message.message_id,
+        )
+        return
+    handle_message(
+        context.bot,
+        update.effective_chat.id,
+        message,
+        OPENAI_API_KEY,
+        update.message.message_id,
+    )  # 调用处理消息的函数

@@ -37,5 +37,7 @@ __pycache__/
 
 # 一些不要的文件
 nohup.out
-response_example.json
 config.yaml
+log
+pixiv.jpg
+UnitTest.py

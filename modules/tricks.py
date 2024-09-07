@@ -1,4 +1,5 @@
 from modules.random_pixiv import random_pixiv_img
+from modules.chatgpt import chat_command
 import random
 import yaml
 from modules.one_word import get_one_word
@@ -6,27 +7,27 @@ from modules.one_word import get_one_word
 
 my_dict = [
     "嗯……",
-    "也就那样吧",
-    "还行吧",
-    "6",
-    "666",
-    "nb",
+    #     "也就那样吧",
+    #     "还行吧",
+    #     "6",
+    #     "666",
+    #     "nb",
     "那确实",
-    "哎不是",
-    "呃呃",
-    "真受不了",
-    "有点无语了",
-    "说实话有点无语了",
+    #     "哎不是",
+    #     "呃呃",
+    #     "真受不了",
+    #     "有点无语了",
+    #     "说实话有点无语了",
     "确实",
-    "还可以吧",
-    "急什么",
-    "你先别急",
-    "扎不多得勒",
-    "我不好说",
-    "你急什么",
+    #     "还可以吧",
+    #     "急什么",
+    #     "你先别急",
+    #     "扎不多得勒",
+    #     "我不好说",
+    #     "你急什么",
     "还真是",
     "都什么年代了",
-    "这是典型的gn",
+    #     "这是典型的gn",
 ]
 
 
@@ -86,12 +87,12 @@ def handle_message(update, context):
             text="是啊",
             reply_to_message_id=update.message.message_id,
         )
-    elif "我都可以" in message:
-        context.bot.send_message(
-            chat_id=update.effective_chat.id,
-            text="非常坏答案😡恨来自月神",
-            reply_to_message_id=update.message.message_id,
-        )
+    #     elif "我都可以" in message:
+    #         context.bot.send_message(
+    #             chat_id=update.effective_chat.id,
+    #             text="非常坏答案😡恨来自月神",
+    #             reply_to_message_id=update.message.message_id,
+    #         )
     elif "谁问你了" in message:
         context.bot.send_message(
             chat_id=update.effective_chat.id,
@@ -129,3 +130,15 @@ def handle_message(update, context):
             text=get_one_word(),
             reply_to_message_id=update.message.message_id,
         )
+    # elif i < 100:
+    #     # Let's make a random AI reply
+    #     # PROBABILTY = 1
+    #     # if random.random() < PROBABILTY:
+    #     print("Random AI reply")
+    #     chat_command(
+    #         update,
+    #         context,
+    #         system_prompt="你是 b 站的梗界扛把子，回复网友时要像开挂一样，疯狂融入各种互联网梗，语言风格要骚气冲天、笑果无敌，确保大家笑到打鸣：",
+    #     )
+    #     print("Random AI reply ends")
+    #     # Random AI reply ends

@@ -22,6 +22,7 @@ from modules.food import food_command
 from modules.anonymous import admin_command, anonymous_command
 from modules.tarot import tarot_command
 from modules.fortune import tell_fortune
+from modules.remake import remake_command 
 from modules.list_help import list_help
 
 
@@ -62,6 +63,7 @@ def onWork_reminder(context):
 def private_message_handler(update, context):
     user = update.message.from_user
     message = update.message
+
     if message.text is not None:
         if message.text.startswith("/random_pixiv"):
             handle_random_pixiv(context.bot, update)
@@ -180,6 +182,7 @@ def main():
     dispatcher.add_handler(CommandHandler("tarot", tarot_command))
     dispatcher.add_handler(CommandHandler("suangua", tell_fortune))
     dispatcher.add_handler(CommandHandler("timer", timer_handler))
+    dispatcher.add_handler(CommandHandler("remake", remake_command))
     dispatcher.add_handler(CommandHandler("help", list_help))
 
     # 响应特定消息

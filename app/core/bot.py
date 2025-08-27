@@ -2,6 +2,7 @@ from telegram.ext import Updater
 from app.core.config import API_TOKEN
 from app.handlers.commands import register_all_commands
 from app.handlers.messages import register_all_message_handlers
+from app.handlers.error import register as register_error_handler
 from app.scheduled.reminders import schedule_reminders
 
 
@@ -24,6 +25,10 @@ def run_bot(bot_data=None):
     # Register all command and message handlers
     register_all_commands(dispatcher)
     register_all_message_handlers(dispatcher)
+
+    # 注册错误处理器
+    # Register error handler
+    register_error_handler(dispatcher)
 
     # 安排定时任务
     # Schedule jobs

@@ -1,5 +1,6 @@
 from telegram import ParseMode
 
+
 def send_drink_water_message(bot, chat_id):
     notification = """
     <b>月神的温馨提醒：</b>

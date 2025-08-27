@@ -532,9 +532,7 @@ def create_prompt(cards, topic=None):
             card_desc = card[0]["desc"]
         else:
             card_desc = card[0]["rdesc"]
-        prompt += (
-            f"牌名: {card_name}，{upright_or_reverse}位，{card_type}牌。描述如下：{card_desc}\n"
-        )
+        prompt += f"牌名: {card_name}，{upright_or_reverse}位，{card_type}牌。描述如下：{card_desc}\n"
     prompt += "```\n请你用中文说说我都抽到了什么，牌名、牌的种类使用中英双语"
     if topic:
         prompt += f"，并给出对问题“{topic}”的建议."

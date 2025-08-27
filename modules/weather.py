@@ -1,140 +1,137 @@
-from ImplClass.OpenWeather import OpenWeather
 import pytz
 from datetime import datetime, time, timedelta
-import yaml
+from telegram import Update
+from telegram.ext import CallbackContext
+from app.services.weather_service import weather_service
+from app.core.config import TIMEZONE
 
 
-with open("config.yaml", "r") as file:
-    config = yaml.safe_load(file)
-WEATHER_API_KEY = config["Weather"]["API_KEY"]
-WEATHER_LAT = config["Weather"]["LAT"]
-WEATHER_LON = config["Weather"]["LON"]
-TIMEZONE = config["Basic"]["TIMEZONE"]
-
-
-def get_weather(API_KEY):
-    # 如果API_KEY不是一个32位的字符串，那么直接返回None
-    if len(API_KEY) != 32:
+def get_weather():
+    """
+    获取当前天气信息。
+    Fetches the current weather information.
+    """
+    try:
+        return weather_service.get_weather()
+    except Exception as e:
+        print(f"获取天气信息时出错: {e}")
         return None
-    weather = OpenWeather(API_KEY, WEATHER_LAT, WEATHER_LON)
-    weather_info = weather.getWeather()
-    return weather_info
 
 
-def handle_weather(bot, chat_id, API_KEY, message_id):
-    weather_info = get_weather(API_KEY)
-    weather_type = weather_info[0]
-    temp = weather_info[1]
-    feels_like = weather_info[2]
-    humidity = weather_info[5]
-    wind_speed = weather_info[6]
-    city = weather_info[7]
-    bot.send_message(
-        chat_id=chat_id,
-        text="""
-        当当，{}的群u们🥳！<b>现在的天气🌤️是{}，体感温度 {} ℃，湿度 {} %</b>，详细情报如下捏！
-        天气：{}
-        温度：{} ℃
-        体感温度：{} ℃
-        湿度：{} %
-        风速：{} m/s
-        """.format(
-            city,
-            weather_type,
-            feels_like,
-            humidity,
-            weather_type,
-            temp,
-            feels_like,
-            humidity,
-            wind_speed,
-        ),
-        parse_mode="HTML",
-        reply_to_message_id=message_id,
-    )
-    AttachInfo = ""
-    if feels_like > 30 and humidity > 60:
-        AttachInfo = "真的离谱，什么蒸桑拿，又热又湿（"
-    elif feels_like > 30:
-        AttachInfo = "真的热死了，快去吹空调（"
-    elif feels_like < 5 and wind_speed > 8:
-        AttachInfo = "翻風咗，而家好凍㗎（"
-    elif feels_like < 5:
-        AttachInfo = "而家好凍㗎（"
-    if AttachInfo != "":
+def handle_weather(bot, chat_id, message_id):
+    """
+    处理并发送当前天气信息。
+    Handles and sends the current weather information.
+    """
+    weather_info = get_weather()
+    if not weather_info:
         bot.send_message(
             chat_id=chat_id,
-            text="""
-            {}
-            """.format(
-                AttachInfo,
-            ),
+            text="抱歉，无法获取当前天气信息。",
             reply_to_message_id=message_id,
+        )
+        return
+
+    text = (
+        f"当当，{weather_info['city']}的群u们🥳！<b>现在的天气🌤️是{weather_info['description']}，"
+        f"体感温度 {weather_info['feels_like']:.1f} ℃，湿度 {weather_info['humidity']:.0f} %</b>，详细情报如下捏！\n"
+        f"天气：{weather_info['description']}\n"
+        f"温度：{weather_info['temp']:.1f} ℃\n"
+        f"体感温度：{weather_info['feels_like']:.1f} ℃\n"
+        f"湿度：{weather_info['humidity']:.0f} %\n"
+        f"风速：{weather_info['wind_speed']:.1f} m/s"
+    )
+    bot.send_message(
+        chat_id=chat_id, text=text, parse_mode="HTML", reply_to_message_id=message_id
+    )
+
+    # 附加提醒 / Additional reminders
+    feels_like = weather_info["feels_like"]
+    humidity = weather_info["humidity"]
+    wind_speed = weather_info["wind_speed"]
+    attach_info = ""
+    if feels_like > 30 and humidity > 60:
+        attach_info = "真的离谱，什么蒸桑拿，又热又湿（"
+    elif feels_like > 30:
+        attach_info = "真的热死了，快去吹空调（"
+    elif feels_like < 5 and wind_speed > 8:
+        attach_info = "翻風咗，而家好凍㗎（"
+    elif feels_like < 5:
+        attach_info = "而家好凍㗎（"
+    if attach_info:
+        bot.send_message(
+            chat_id=chat_id, text=attach_info, reply_to_message_id=message_id
         )
 
 
-def get_forecast(API_KEY):
-    # 如果API_KEY不是一个32位的字符串，那么直接返回None
-    if len(API_KEY) != 32:
+def get_forecast():
+    """
+    获取天气预报。
+    Fetches the weather forecast.
+    """
+    try:
+        return weather_service.get_forecast()
+    except Exception as e:
+        print(f"获取天气预报时出错: {e}")
         return None
-    weather = OpenWeather(API_KEY, WEATHER_LAT, WEATHER_LON)
-    forecast_info = weather.getForecast()
-    return forecast_info
 
 
-def handle_forecast(bot, chat_id, API_KEY, TIMEZONE, message_id):
-    forecast_info = get_forecast(API_KEY)
+def handle_forecast(bot, chat_id, message_id):
+    """
+    处理并发送天气预报。
+    Handles and sends the weather forecast.
+    """
+    forecast_info = get_forecast()
+    if not forecast_info:
+        bot.send_message(
+            chat_id=chat_id,
+            text="抱歉，无法获取天气预报。",
+            reply_to_message_id=message_id,
+        )
+        return
+
     timezone = pytz.timezone(TIMEZONE)
-    tomorrow = datetime.now().date() + timedelta(days=1)
+    tomorrow = datetime.now(timezone).date() + timedelta(days=1)
     tomorrow_eight_am = timezone.localize(datetime.combine(tomorrow, time(hour=8)))
-    tomorrow_eight_am_ts = tomorrow_eight_am.astimezone(pytz.utc).timestamp()
+    target_ts = tomorrow_eight_am.timestamp()
+
     for forecast in forecast_info:
-        forecast_time = forecast["dt"]
-        if forecast_time == tomorrow_eight_am_ts:
-            weather_type = forecast["weather"][0]["description"]
-            temp = forecast["main"]["temp"]
-            feels_like = forecast["main"]["feels_like"]
-            humidity = forecast["main"]["humidity"]
-            wind_speed = forecast["wind"]["speed"]
+        if abs(forecast["dt"] - target_ts) < 1800:  # 寻找最接近早上8点的数据 (30分钟内)
+            text = (
+                f"群u们🥳！<b>明天早上 8 点的天气🌤️是 {forecast['weather'][0]['description']}，"
+                f"体感温度 {forecast['main']['feels_like']:.1f} ℃，湿度 {forecast['main']['humidity']:.0f} %</b>，详细情报如下捏！\n"
+                f"天气：{forecast['weather'][0]['description']}\n"
+                f"温度：{forecast['main']['temp']:.1f} ℃\n"
+                f"体感温度：{forecast['main']['feels_like']:.1f} ℃\n"
+                f"湿度：{forecast['main']['humidity']:.0f} %\n"
+                f"风速：{forecast['wind']['speed']:.1f} m/s"
+            )
             bot.send_message(
                 chat_id=chat_id,
-                text="""
-                群u们🥳！<b>明天早上 8 点的天气🌤️是 {}，体感温度 {} ℃，湿度 {} %</b>，详细情报如下捏！
-        天气：{}
-        温度：{} ℃
-        体感温度：{} ℃
-        湿度：{} %
-        风速：{} m/s
-                """.format(
-                    weather_type,
-                    feels_like,
-                    humidity,
-                    weather_type,
-                    temp,
-                    feels_like,
-                    humidity,
-                    wind_speed,
-                ),
+                text=text,
                 parse_mode="HTML",
                 reply_to_message_id=message_id,
             )
-            break
+            return
+
+    bot.send_message(
+        chat_id=chat_id,
+        text="抱歉，未能找到明天早上8点的天气预报。",
+        reply_to_message_id=message_id,
+    )
 
 
-def weather_command(update, context):
+def weather_command(update: Update, context: CallbackContext):
     handle_weather(
         context.bot,
         update.effective_chat.id,
-        WEATHER_API_KEY,
         update.message.message_id,
     )
 
 
-def forecast_command(update, context):
+def forecast_command(update: Update, context: CallbackContext):
     handle_forecast(
         context.bot,
         update.effective_chat.id,
-        WEATHER_API_KEY,
-        TIMEZONE,
         update.message.message_id,
     )

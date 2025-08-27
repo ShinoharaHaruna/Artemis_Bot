@@ -2,7 +2,11 @@ import requests
 import yaml
 
 
-def get_chatbot_response(message, API_KEY, system_prompt = "你是阿尔忒弥斯，是群组的月神，并且你能回答群组成员的话。"):
+def get_chatbot_response(
+    message,
+    API_KEY,
+    system_prompt="你是阿尔忒弥斯，是群组的月神，并且你能回答群组成员的话。",
+):
     url = "https://api.openai.com/v1/chat/completions"
     headers = {
         "Authorization": "Bearer " + API_KEY,
@@ -36,7 +40,11 @@ def handle_message(bot, chat_id, message, API_KEY, message_id):
     )
 
 
-def chat_command(update, context, system_prompt = "你是阿尔忒弥斯，是群组的月神，并且你能回答群组成员的话。"):
+def chat_command(
+    update,
+    context,
+    system_prompt="你是阿尔忒弥斯，是群组的月神，并且你能回答群组成员的话。",
+):
     with open("config.yaml", "r") as file:
         config = yaml.safe_load(file)
     MASTER_ID = config["Basic"]["MASTER_ID"]

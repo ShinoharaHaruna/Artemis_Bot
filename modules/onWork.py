@@ -1,9 +1,8 @@
 from telegram import ParseMode
 import modules.weather as weather
-from modules.one_word import get_one_word
 
 
-def send_on_work_message(bot, chat_id, API_KEY):
+def send_on_work_message(context, chat_id, API_KEY):
     weather_info = weather.get_weather(API_KEY)
     weather_type = weather_info[0]
     feels_like = weather_info[2]
@@ -13,7 +12,16 @@ def send_on_work_message(bot, chat_id, API_KEY):
         {}
         <b>今天早上 8 点的天气🌤️是{}，体感温度 {} ℃，湿度 {} %</b>，请群u注意捏！
         """.format(
-        get_one_word(), weather_type, feels_like, humidity
+        (
+            context.bot_data.get("one_word_service").get_one_word()
+            if context.bot_data.get("one_word_service")
+            else ""
+        ),
+        weather_type,
+        feels_like,
+        humidity,
     )
 
-    bot.send_message(chat_id=chat_id, text=notification, parse_mode=ParseMode.HTML)
+    context.bot.send_message(
+        chat_id=chat_id, text=notification, parse_mode=ParseMode.HTML
+    )

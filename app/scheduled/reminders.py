@@ -29,7 +29,7 @@ def on_work_reminder(context):
     发送上班提醒。
     Sends an on-work reminder.
     """
-    send_on_work_message(context.bot, GROUP_CHAT_ID, WEATHER_API_KEY)
+    send_on_work_message(context, GROUP_CHAT_ID, WEATHER_API_KEY)
 
 
 def schedule_reminders(job_queue: JobQueue):

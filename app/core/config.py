@@ -15,13 +15,17 @@ def load_config():
 config = load_config()
 
 # 从配置中提取常量 / Extract constants from configuration
-API_TOKEN = config["Basic"]["API_TOKEN"]
-MASTER_ID = config["Basic"]["MASTER_ID"]
-TIMEZONE = config["Basic"]["TIMEZONE"]
-GROUP_CHAT_ID = config["GroupChat"][0][0]
 
-OPENAI_API_KEY = config["OpenAI"]["OPENAI_API_KEY"]
+API_TOKEN = config["Basic"]["API_TOKEN"]
+BOT_NAME = config["Basic"]["BOT_NAME"]
+MASTER_ID = config["Basic"]["MASTER_ID"]
+MISS_MACAU_ID = config["Basic"]["MISS_MACAU_ID"]
+TIMEZONE = config["Basic"]["TIMEZONE"]
+
+GROUP_CHAT_ID = config["GroupChat"][0][0]
 
 WEATHER_API_KEY = config["Weather"]["API_KEY"]
 WEATHER_LAT = config["Weather"]["LAT"]
 WEATHER_LON = config["Weather"]["LON"]
+
+OPENAI_API_KEY = config["OpenAI"]["OPENAI_API_KEY"]

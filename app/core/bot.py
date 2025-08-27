@@ -5,7 +5,7 @@ from app.handlers.messages import register_all_message_handlers
 from app.scheduled.reminders import schedule_reminders
 
 
-def run_bot():
+def run_bot(bot_data=None):
     """
     初始化并运行 Bot。
     Initializes and runs the Bot.
@@ -14,6 +14,11 @@ def run_bot():
     # Initialize Updater and Dispatcher
     updater = Updater(token=API_TOKEN, use_context=True)
     dispatcher = updater.dispatcher
+
+    # 如果提供了 bot_data，则注入服务
+    # If bot_data is provided, inject the services
+    if bot_data:
+        dispatcher.bot_data.update(bot_data)
 
     # 注册所有命令和消息处理器
     # Register all command and message handlers

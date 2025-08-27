@@ -1,6 +1,4 @@
 from telegram.ext import CommandHandler
-from app.services.tarot_service import TarotService
-from app.services.chatgpt_service import ChatGPTService
 
 
 def tarot_command(update, context):

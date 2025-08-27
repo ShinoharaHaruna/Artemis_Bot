@@ -1,11 +1,9 @@
+from datetime import time
 import pytz
-from datetime import datetime, time
 from telegram.ext import JobQueue
 
-from app.core.config import GROUP_CHAT_ID, TIMEZONE, WEATHER_API_KEY
-from modules.drinkwater import send_drink_water_message
-from modules.offWork import send_off_work_message
-from modules.onWork import send_on_work_message
+from telegram import ParseMode
+from app.core.config import GROUP_CHAT_ID, TIMEZONE
 
 
 def send_reminder(context):
@@ -13,7 +11,15 @@ def send_reminder(context):
     发送喝水提醒。
     Sends a drink water reminder.
     """
-    send_drink_water_message(context.bot, GROUP_CHAT_ID)
+    drink_water_service = context.bot_data.get("drink_water_service")
+    if not drink_water_service:
+        # 可以选择在这里记录一个错误，但为了简单起见，我们暂时跳过
+        # You could log an error here, but for simplicity, we'll skip it for now
+        return
+    message = drink_water_service.get_drink_water_message()
+    context.bot.send_message(
+        chat_id=GROUP_CHAT_ID, text=message, parse_mode=ParseMode.HTML
+    )
 
 
 def off_work_reminder(context):
@@ -21,7 +27,13 @@ def off_work_reminder(context):
     发送下班提醒。
     Sends an off-work reminder.
     """
-    send_off_work_message(context.bot, GROUP_CHAT_ID, WEATHER_API_KEY, TIMEZONE)
+    off_work_service = context.bot_data.get("off_work_service")
+    if not off_work_service:
+        return
+    message = off_work_service.get_off_work_message()
+    context.bot.send_message(
+        chat_id=GROUP_CHAT_ID, text=message, parse_mode=ParseMode.HTML
+    )
 
 
 def on_work_reminder(context):
@@ -29,7 +41,14 @@ def on_work_reminder(context):
     发送上班提醒。
     Sends an on-work reminder.
     """
-    send_on_work_message(context, GROUP_CHAT_ID, WEATHER_API_KEY)
+    one_word_service = context.bot_data.get("one_word_service")
+    if one_word_service:
+        quote = one_word_service.get_quote()
+        text = f"新的一天，新的开始！上班加油！\n\n今日一言：{quote}"
+    else:
+        text = "新的一天，新的开始！上班加油！"
+
+    context.bot.send_message(chat_id=GROUP_CHAT_ID, text=text)
 
 
 def schedule_reminders(job_queue: JobQueue):

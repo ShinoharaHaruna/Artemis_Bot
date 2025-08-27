@@ -1,4 +1,3 @@
-import requests
 from telegram.ext import CommandHandler
 
 

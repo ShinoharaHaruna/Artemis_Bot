@@ -1,5 +1,5 @@
-import requests
 import urllib.parse as urlparse
+import requests
 from bs4 import BeautifulSoup
 from telegram.ext import CommandHandler
 

@@ -8,6 +8,9 @@ from app.services.answerbook_service import AnswerbookService
 from app.services.one_word_service import OneWordService
 from app.services.canned_response_service import CannedResponseService
 from app.services.setu_service import SetuService
+from app.services.weather_service import WeatherService
+from app.services.off_work_service import OffWorkService
+from app.services.drink_water_service import DrinkWaterService
 
 
 def main():
@@ -25,6 +28,9 @@ def main():
     one_word_service = OneWordService()
     canned_response_service = CannedResponseService()
     setu_service = SetuService()
+    weather_service = WeatherService()
+    off_work_service = OffWorkService(weather_service=weather_service)
+    drink_water_service = DrinkWaterService()
 
     # 创建 bot_data 字典来存储服务
     # Create bot_data dictionary to store services
@@ -35,6 +41,9 @@ def main():
         "one_word_service": one_word_service,
         "canned_response_service": canned_response_service,
         "setu_service": setu_service,
+        "weather_service": weather_service,
+        "off_work_service": off_work_service,
+        "drink_water_service": drink_water_service,
     }
 
     # 运行 Bot 并传递 bot_data

@@ -5,6 +5,9 @@ from app.core.config import TIMEZONE, OPENAI_API_KEY
 from app.services.tarot_service import TarotService
 from app.services.chatgpt_service import ChatGPTService
 from app.services.answerbook_service import AnswerbookService
+from app.services.one_word_service import OneWordService
+from app.services.canned_response_service import CannedResponseService
+from app.services.setu_service import SetuService
 
 
 def main():
@@ -19,6 +22,9 @@ def main():
     tarot_service = TarotService()
     chatgpt_service = ChatGPTService(api_key=OPENAI_API_KEY)
     answerbook_service = AnswerbookService()
+    one_word_service = OneWordService()
+    canned_response_service = CannedResponseService()
+    setu_service = SetuService()
 
     # 创建 bot_data 字典来存储服务
     # Create bot_data dictionary to store services
@@ -26,6 +32,9 @@ def main():
         "tarot_service": tarot_service,
         "chatgpt_service": chatgpt_service,
         "answerbook_service": answerbook_service,
+        "one_word_service": one_word_service,
+        "canned_response_service": canned_response_service,
+        "setu_service": setu_service,
     }
 
     # 运行 Bot 并传递 bot_data

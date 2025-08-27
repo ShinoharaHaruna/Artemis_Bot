@@ -29,6 +29,9 @@ def list_help(update, context):
     <b>12. 塔罗占卜</b>
     月神可以帮你进行塔罗占卜哦！只需要在群组中输入/tarot，后面可以选择跟上你想问的话题，月神就会为你用塔罗牌占卜！
     例如：/tarot 我想知道我明天的运势
+    <b>13. 设置提醒</b>
+    月神可以帮你设置提醒哦！只需要在私聊中输入/reminder YYYYMMDDHHMM <提醒内容>，月神就会在指定时间提醒你！
+    例如：/reminder 202508281930 去看电影
     """
 
     context.bot.send_message(

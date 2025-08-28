@@ -43,7 +43,7 @@ def on_work_reminder(context):
     """
     one_word_service = context.bot_data.get("one_word_service")
     if one_word_service:
-        quote = one_word_service.get_quote()
+        quote = one_word_service.get_one_word()
         text = f"新的一天，新的开始！上班加油！\n\n今日一言：{quote}"
     else:
         text = "新的一天，新的开始！上班加油！"

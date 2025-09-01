@@ -1,6 +1,8 @@
 import pytz
+import threading
 from datetime import datetime
 from app.core.bot import run_bot
+from app.core.web import web_app
 from app.core.config import TIMEZONE, OPENAI_API_KEY
 from app.services.tarot_service import TarotService
 from app.services.chatgpt_service import ChatGPTService
@@ -45,6 +47,12 @@ def main():
         "off_work_service": off_work_service,
         "drink_water_service": drink_water_service,
     }
+
+    # 在一个单独的线程中运行 Flask 应用
+    # Run the Flask app in a separate thread
+    web_thread = threading.Thread(target=lambda: web_app.run(host="0.0.0.0", port=8080))
+    web_thread.daemon = True
+    web_thread.start()
 
     # 运行 Bot 并传递 bot_data
     # Run the Bot and pass bot_data

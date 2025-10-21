@@ -1,5 +1,7 @@
+import pytz
+from datetime import datetime
 from telegram.ext import Updater
-from app.core.config import API_TOKEN
+from app.core.config import API_TOKEN, MASTER_ID, TIMEZONE
 from app.handlers.commands import register_all_commands
 from app.handlers.messages import register_all_message_handlers
 from app.handlers.error import register as register_error_handler
@@ -37,4 +39,16 @@ def run_bot(bot_data=None):
     # 启动 Bot
     # Start the Bot
     updater.start_polling()
+
+    # 发送启动成功消息给 master
+    # Send startup success message to master
+    try:
+        start_time = datetime.now(pytz.timezone(TIMEZONE))
+        updater.bot.send_message(
+            chat_id=MASTER_ID,
+            text=f"✅ Bot 启动成功\n启动时间: {start_time.strftime('%Y-%m-%d %H:%M:%S %Z')}",
+        )
+    except Exception as e:
+        print(f"Failed to send startup message to master: {e}")
+
     updater.idle()

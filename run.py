@@ -64,7 +64,14 @@ def main():
 
     # 在一个单独的线程中运行 Flask 应用
     # Run the Flask app in a separate thread
-    web_thread = threading.Thread(target=lambda: web_app.run(host="0.0.0.0", port=8080))
+    web_thread = threading.Thread(
+        target=lambda: web_app.run(
+            host="0.0.0.0",
+            port=8080,
+            debug=False,
+            use_reloader=False,
+        )
+    )
     web_thread.daemon = True
     web_thread.start()
 

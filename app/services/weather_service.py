@@ -33,7 +33,7 @@ class WeatherService:
             dict: 包含天气信息的字典。
                   Returns a dictionary containing weather information.
         """
-        response = requests.get(self.weather_url)
+        response = requests.get(self.weather_url, timeout=10)
         response.raise_for_status()  # 如果请求失败则抛出异常 / Raise an exception for a failed request
         data = response.json()
         return {
@@ -56,7 +56,7 @@ class WeatherService:
             list: 包含天气预报信息的列表。
                   Returns a list containing weather forecast information.
         """
-        response = requests.get(self.forecast_url)
+        response = requests.get(self.forecast_url, timeout=10)
         response.raise_for_status()  # 如果请求失败则抛出异常 / Raise an exception for a failed request
         data = response.json()
         return data["list"]

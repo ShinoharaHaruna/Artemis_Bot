@@ -21,7 +21,11 @@ def get_food_info(keyword):
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
         "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36"
     }
-    response = requests.get(url, headers=headers)
+    try:
+        response = requests.get(url, headers=headers, timeout=15)
+    except requests.exceptions.RequestException:
+        # 网络请求失败时返回空结果 / Return empty result on network failure
+        return None, None, None
     soup = BeautifulSoup(response.text, "html.parser")
     most_match = soup.find_all("td", class_="borderBottom")
     if not most_match:
@@ -29,7 +33,11 @@ def get_food_info(keyword):
 
     food_name = most_match[0].find("a").text
     food_url = base_url + most_match[0].find("a")["href"]
-    response = requests.get(food_url, headers=headers)
+    try:
+        response = requests.get(food_url, headers=headers, timeout=15)
+    except requests.exceptions.RequestException:
+        # 网络请求失败时返回空结果 / Return empty result on network failure
+        return None, None, None
     soup = BeautifulSoup(response.text, "html.parser")
     nut_summary_soup = soup.find_all("div", class_="factPanel")
     nut_summary_table = nut_summary_soup[0].find_all("table")

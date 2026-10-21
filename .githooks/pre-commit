@@ -1,0 +1,20 @@
+#!/bin/sh
+# 提交前对暂存的 Python 文件运行 ruff format，并将格式化结果重新暂存。
+# Run ruff format on staged Python files and re-stage the results.
+# 启用方式 / Enable: git config core.hooksPath .githooks
+
+FILES=$(git diff --cached --name-only --diff-filter=ACMR | grep '\.py$')
+[ -z "$FILES" ] && exit 0
+
+# ruff 只存在于 dev 依赖中；uv 不可用时跳过而非阻断提交
+# ruff is a dev dependency; skip (don't block the commit) if unavailable
+if command -v uv >/dev/null 2>&1; then
+    echo "$FILES" | xargs uv run ruff format
+elif command -v ruff >/dev/null 2>&1; then
+    echo "$FILES" | xargs ruff format
+else
+    echo "pre-commit: ruff not found, skipping format" >&2
+    exit 0
+fi
+
+echo "$FILES" | xargs git add

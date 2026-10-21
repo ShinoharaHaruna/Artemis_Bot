@@ -33,9 +33,7 @@ def query_scholar(keyword):
         for article in articles:
             if count >= 5:
                 break
-            if not (title_tag := article.find(class_="gs_rt")) or not title_tag.find(
-                "a"
-            ):
+            if not (title_tag := article.find(class_="gs_rt")) or not title_tag.find("a"):
                 continue
 
             count += 1

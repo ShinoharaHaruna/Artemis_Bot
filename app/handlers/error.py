@@ -25,9 +25,7 @@ async def error_handler(update: object, context: CallbackContext) -> None:
 
     # 格式化 traceback
     # Format the traceback
-    tb_list = traceback.format_exception(
-        None, context.error, context.error.__traceback__
-    )
+    tb_list = traceback.format_exception(None, context.error, context.error.__traceback__)
     tb_string = "".join(tb_list)
 
     # 准备要发送给开发者的消息
@@ -55,9 +53,7 @@ async def error_handler(update: object, context: CallbackContext) -> None:
                 if newline > start:
                     end = newline + 1
             chunk = message[start:end]
-            await context.bot.send_message(
-                chat_id=MASTER_ID, text=chunk, parse_mode=ParseMode.HTML
-            )
+            await context.bot.send_message(chat_id=MASTER_ID, text=chunk, parse_mode=ParseMode.HTML)
             start = end
 
 

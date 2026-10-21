@@ -38,6 +38,7 @@ __pycache__/
 # 一些不要的文件
 nohup.out
 config.yaml
+.pi/
 log
 pixiv.jpg
 UnitTest.py

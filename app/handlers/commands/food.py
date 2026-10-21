@@ -1,6 +1,6 @@
 import urllib.parse as urlparse
 import requests
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, Tag
 from telegram.ext import CommandHandler
 
 
@@ -31,8 +31,13 @@ def get_food_info(keyword):
     if not most_match:
         return None, None, None
 
-    food_name = most_match[0].find("a").text
-    food_url = base_url + most_match[0].find("a")["href"]
+    first_match = most_match[0]
+    match_link = first_match.find("a") if isinstance(first_match, Tag) else None
+    if not isinstance(match_link, Tag) or not match_link.get("href"):
+        # 未找到匹配的链接时返回空结果 / Return empty result when no link found
+        return None, None, None
+    food_name = match_link.text
+    food_url = base_url + str(match_link["href"])
     try:
         response = requests.get(food_url, headers=headers, timeout=15)
     except requests.exceptions.RequestException:
@@ -40,18 +45,41 @@ def get_food_info(keyword):
         return None, None, None
     soup = BeautifulSoup(response.text, "html.parser")
     nut_summary_soup = soup.find_all("div", class_="factPanel")
-    nut_summary_table = nut_summary_soup[0].find_all("table")
-    tds = nut_summary_table[0].find_all("td")
-    tds = [td for td in tds if td.text]
+    if not nut_summary_soup:
+        # 未找到营养摘要面板时返回空结果 / Return empty result when summary panel missing
+        return None, None, None
+    panel = nut_summary_soup[0]
+    if not isinstance(panel, Tag):
+        # 营养摘要面板类型异常时返回空结果 / Return empty result on unexpected panel type
+        return None, None, None
+    nut_summary_table = panel.find_all("table")
+    summary_table = nut_summary_table[0] if nut_summary_table else None
+    if not isinstance(summary_table, Tag):
+        # 未找到营养摘要表格时返回空结果 / Return empty result when summary table missing
+        return None, None, None
+    tds = summary_table.find_all("td")
+    tds = [td for td in tds if isinstance(td, Tag) and td.text]
     summary = {"food_name": food_name, "food_url": food_url}
     for i in range(0, len(tds)):
-        item, value = tds[i].text.split("\n")[1], tds[i].text.split("\n")[2]
+        parts = tds[i].text.split("\n")
+        if len(parts) < 3:
+            # 跳过格式不完整的单元格 / Skip cells with incomplete format
+            continue
+        item, value = parts[1], parts[2]
         summary[item] = value
-    description_soup = nut_summary_soup[0].find_all("table", class_="generic spaced")
-    food_description = description_soup[1].find_all("td")[0].text
-    calorie_description = (
-        description_soup[1].find_all("td")[1].text.replace("热量分解：", "")
-    )
+    description_soup = panel.find_all("table", class_="generic spaced")
+    desc_table = description_soup[1] if len(description_soup) > 1 else None
+    if not isinstance(desc_table, Tag):
+        # 未找到描述表格时返回空结果 / Return empty result when description table missing
+        return None, None, None
+    description_tds = [
+        td for td in desc_table.find_all("td") if isinstance(td, Tag)
+    ]
+    if len(description_tds) < 2:
+        # 未找到描述单元格时返回空结果 / Return empty result when description cells missing
+        return None, None, None
+    food_description = description_tds[0].text
+    calorie_description = description_tds[1].text.replace("热量分解：", "")
     return (
         summary,
         strip_blank(food_description).strip(),

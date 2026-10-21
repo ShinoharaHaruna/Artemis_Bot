@@ -27,5 +27,3 @@ GROUP_CHAT_ID = config["GroupChat"][0][0]
 WEATHER_API_KEY = config["Weather"]["API_KEY"]
 WEATHER_LAT = config["Weather"]["LAT"]
 WEATHER_LON = config["Weather"]["LON"]
-
-OPENAI_API_KEY = config["OpenAI"]["OPENAI_API_KEY"]

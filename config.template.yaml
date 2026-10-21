@@ -14,6 +14,3 @@ Weather:
   # 经纬度
   LAT: XXXXXXXX
   LON: XXXXXXXX
-
-OpenAI:
-  OPENAI_API_KEY: sk-XXXXXXXX

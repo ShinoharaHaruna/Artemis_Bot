@@ -4,9 +4,7 @@ import threading
 from datetime import datetime
 from app.core.bot import run_bot
 from app.core.web import web_app
-from app.core.config import TIMEZONE, OPENAI_API_KEY, MASTER_ID, API_TOKEN
-from app.services.tarot_service import TarotService
-from app.services.chatgpt_service import ChatGPTService
+from app.core.config import TIMEZONE, MASTER_ID, API_TOKEN
 from app.services.answerbook_service import AnswerbookService
 from app.services.one_word_service import OneWordService
 from app.services.canned_response_service import CannedResponseService
@@ -38,8 +36,6 @@ def main():
 
     # 初始化服务
     # Initialize services
-    tarot_service = TarotService()
-    chatgpt_service = ChatGPTService(api_key=OPENAI_API_KEY)
     answerbook_service = AnswerbookService()
     one_word_service = OneWordService()
     canned_response_service = CannedResponseService()
@@ -51,8 +47,6 @@ def main():
     # 创建 bot_data 字典来存储服务
     # Create bot_data dictionary to store services
     bot_data = {
-        "tarot_service": tarot_service,
-        "chatgpt_service": chatgpt_service,
         "answerbook_service": answerbook_service,
         "one_word_service": one_word_service,
         "canned_response_service": canned_response_service,

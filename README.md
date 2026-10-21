@@ -11,7 +11,6 @@
 <p align="center">
     <img src="https://img.shields.io/badge/Python-3776AB.svg?style=for-the-badge&logo=Python&logoColor=white" alt="python" />
     <img src="https://img.shields.io/badge/Telegram-26A5E4.svg?style=for-the-badge&logo=Telegram&logoColor=white" alt="telegram" />
-    <img src="https://img.shields.io/badge/OpenAI-412991.svg?style=for-the-badge&logo=OpenAI&logoColor=white" alt="openai" />
 </p>
 
 ## 简介
@@ -43,36 +42,25 @@
 2. **下班提醒**
     月神会在工作日晚上 22:30 提醒大家下班，并给出明天早上 8 点的天气情况。
 
-3. **聊天功能**
-    月神可以和大家聊天哦！只需要在群组中输入`/chat`+你想说的话，月神就会回复你啦！
-    例如：`/chat 你好呀！`
-
-4. **生成图片**
-    月神可以根据你输入的文字生成图片哦！只需要在群组中输入`/draw`+你想说的话，月神就会生成图片并发送给你啦！
-
-5. **天气查询**
+3. **天气查询**
     月神可以查询你的天气哦！只需要在群组中输入`/weather`，月神就会发送今日的天气情况给你啦！
 
-6. **未来天气查询**
+4. **未来天气查询**
     月神可以查询你明早早八的天气哦！只需要在群组中输入`/forecast`，月神就会发送给你啦！
 
-7. **随机 Pixiv 图片**
+5. **随机 Pixiv 图片**
     月神可以发送随机的 Pixiv 图片哦！只需要在群组中输入`/random_pixiv`，月神就会发送给你啦！
 
-8. **一言**
+6. **一言**
     月神可以给你一句箴言哦！只需要在群组中`@月神`+“你怎么看”，月神就会发送给你啦！
 
-9. **答案之书**
+7. **答案之书**
     月神可以赐你回答！在群组中输入`/answer`，跟上你的问题，月神就会给你答案！
 
-10. **营养查询**
+8. **营养查询**
     月神可以帮你在 FatSecret 中查询哦！只需要在群组中输入`/food`+你想查询的内容，月神就会发送给你啦！
 
-11. **塔罗占卜**
-    月神可以帮你进行塔罗占卜哦！只需要在群组中输入`/tarot`，后面可以选择跟上你想问的话题，月神就会为你用塔罗牌占卜！
-    例如：`/tarot 我想知道我明天的运势`
-
-12. **设置提醒**
+9. **设置提醒**
     月神可以帮你设置提醒哦！只需要在私聊中输入`/reminder YYYYMMDDHHMM <提醒内容>`，月神就会在指定时间提醒你！
     例如：`/reminder 202508281930 去看电影`
 
@@ -81,8 +69,6 @@
 答案之书的字典来源：<https://github.com/D1N910/answers-of-my-life>
 
 食物营养数据来自fatsecret：<https://www.fatsecret.cn/>
-
-塔罗牌牌面数据来源：<https://github.com/jeremytarling/python-tarot>
 
 ---
 

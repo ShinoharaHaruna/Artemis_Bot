@@ -36,10 +36,7 @@ def image_generator(update, context):
     prompt = " ".join(context.args)
     # This command is restricted to the master user or the designated group chat
     # 此命令仅限主用户或指定群组聊天使用
-    if (
-        update.message.from_user.id != MASTER_ID
-        and update.effective_chat.id != GROUP_CHAT_ID
-    ):
+    if update.message.from_user.id != MASTER_ID and update.effective_chat.id != GROUP_CHAT_ID:
         context.bot.send_message(
             chat_id=update.effective_chat.id,
             text="抱歉，此命令仅限授权用户在指定群组中使用。",

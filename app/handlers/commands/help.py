@@ -36,11 +36,7 @@ def list_help(update, context):
     例如：/reminder 202508281930 去看电影
     """
 
-    escaped_help_message = (
-        html.escape(help_message)
-        .replace("&lt;b&gt;", "<b>")
-        .replace("&lt;/b&gt;", "</b>")
-    )
+    escaped_help_message = html.escape(help_message).replace("&lt;b&gt;", "<b>").replace("&lt;/b&gt;", "</b>")
 
     context.bot.send_message(
         chat_id=update.effective_chat.id,

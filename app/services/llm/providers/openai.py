@@ -48,9 +48,7 @@ class OpenAIProvider(LLMService):
         }
 
         try:
-            response = requests.post(
-                self.api_url, headers=headers, json=data, timeout=60
-            )
+            response = requests.post(self.api_url, headers=headers, json=data, timeout=60)
             response.raise_for_status()
             response_json = response.json()
             return response_json["choices"][0]["message"]["content"]

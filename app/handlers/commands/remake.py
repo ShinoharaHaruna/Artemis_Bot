@@ -59,10 +59,7 @@ REMAKE_PROMPT = """
 def remake_command(update, context):
     """处理 /remake 命令，生成一个随机的人生故事。"""
     # handle /remake command, generate a random life story
-    if (
-        update.message.from_user.id != MASTER_ID
-        and update.effective_chat.id != GROUP_CHAT_ID
-    ):
+    if update.message.from_user.id != MASTER_ID and update.effective_chat.id != GROUP_CHAT_ID:
         context.bot.send_message(
             chat_id=update.effective_chat.id,
             text="抱歉，此功能仅限特定群组或管理员使用。",

@@ -73,9 +73,7 @@ def get_food_info(keyword):
     if not isinstance(desc_table, Tag):
         # 未找到描述表格时返回空结果 / Return empty result when description table missing
         return None, None, None
-    description_tds = [
-        td for td in desc_table.find_all("td") if isinstance(td, Tag)
-    ]
+    description_tds = [td for td in desc_table.find_all("td") if isinstance(td, Tag)]
     if len(description_tds) < 2:
         # 未找到描述单元格时返回空结果 / Return empty result when description cells missing
         return None, None, None
@@ -88,9 +86,7 @@ def get_food_info(keyword):
     )
 
 
-async def handle_basic_info(
-    bot, chat_id, message_id, summary, food_description, calorie_description
-):
+async def handle_basic_info(bot, chat_id, message_id, summary, food_description, calorie_description):
     """处理基本信息并发送。"""
     # handle basic info and send
     # 转义抓取的文本防止注入 / Escape scraped text to prevent injection
@@ -100,11 +96,11 @@ async def handle_basic_info(
             mass_info += f"\n        {html.escape(t)}: {html.escape(summary[t])}"
     mass_info += "\n"
 
-    text_html = f"""<b>食物名称</b>: {html.escape(summary['food_name'])}
+    text_html = f"""<b>食物名称</b>: {html.escape(summary["food_name"])}
 <b>食物描述</b>: {html.escape(food_description)}
 <b>热量分布</b>: {html.escape(calorie_description)}
 <b>营养摘要</b>: {mass_info}
-<b>详细信息链接</b>: {html.escape(summary['food_url'])}
+<b>详细信息链接</b>: {html.escape(summary["food_url"])}
 """
     await bot.send_message(
         chat_id=chat_id,

@@ -10,9 +10,7 @@ async def random_pixiv_command(update, context):
     url = "https://pixiv-api.vercel.app/api"
     headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "}
     try:
-        response = await asyncio.to_thread(
-            requests.get, url, headers=headers, timeout=15
-        )
+        response = await asyncio.to_thread(requests.get, url, headers=headers, timeout=15)
         response.raise_for_status()  # Raise an exception for bad status codes
         await context.bot.send_photo(
             chat_id=update.effective_chat.id,

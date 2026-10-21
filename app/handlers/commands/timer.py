@@ -20,17 +20,13 @@ async def timer_handler(update: Update, context: CallbackContext):
         timer_start_time = context.chat_data.get("timer_start_time")
         if timer_start_time:
             delta = datetime.now() - timer_start_time
-            await context.bot.send_message(
-                chat_id=chat_id, text=f"计时结束！\n用时：{delta.seconds}秒"
-            )
+            await context.bot.send_message(chat_id=chat_id, text=f"计时结束！\n用时：{delta.seconds}秒")
             # 清理状态 / Clean up state
             del context.chat_data["timer_on"]
             del context.chat_data["timer_start_time"]
         else:
             # 状态异常，重置 / Abnormal state, reset
-            await context.bot.send_message(
-                chat_id=chat_id, text="计时器状态异常，已重置。请重新开始。"
-            )
+            await context.bot.send_message(chat_id=chat_id, text="计时器状态异常，已重置。请重新开始。")
             context.chat_data["timer_on"] = False
 
     else:

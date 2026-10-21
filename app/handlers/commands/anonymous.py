@@ -29,9 +29,7 @@ async def anonymous_command(update, context):
     if message.text is None:
         return
     if update.effective_chat.id == GROUP_CHAT_ID:
-        await context.bot.delete_message(
-            chat_id=update.effective_chat.id, message_id=update.message.message_id
-        )
+        await context.bot.delete_message(chat_id=update.effective_chat.id, message_id=update.message.message_id)
         await context.bot.send_message(
             chat_id=update.effective_chat.id,
             text='私聊月神才可以匿名哦~发送"/anonymous + 消息"，即可匿名发送消息',

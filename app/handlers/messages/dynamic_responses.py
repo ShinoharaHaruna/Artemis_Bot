@@ -42,17 +42,13 @@ async def handle_dynamic_responses(update, context):
     # 包含关键词的回复
     # Keyword-based responses
     if BOT_NAME in message.text and "你怎么看" in message.text and one_word_service:
-        await message.reply_text(
-            await asyncio.to_thread(one_word_service.get_one_word)
-        )
+        await message.reply_text(await asyncio.to_thread(one_word_service.get_one_word))
         return
     elif "是吧" in message.text:
         await message.reply_text("是啊")
         return
     elif "谁问你了" in message.text:
-        await message.reply_html(
-            '<a href="https://www.bilibili.com/video/BV1Gc411u7s5">他问的</a>，怎么了？'
-        )
+        await message.reply_html('<a href="https://www.bilibili.com/video/BV1Gc411u7s5">他问的</a>，怎么了？')
         return
     elif ("来点色图" in message.text or "来点涩图" in message.text) and setu_service:
         await setu_service.send_setu(update, context)
@@ -70,9 +66,7 @@ async def handle_dynamic_responses(update, context):
             if response:
                 await message.reply_text(response)
     elif i < 10 and one_word_service:
-        await message.reply_text(
-            await asyncio.to_thread(one_word_service.get_one_word)
-        )
+        await message.reply_text(await asyncio.to_thread(one_word_service.get_one_word))
 
 
 def register(application):
@@ -80,6 +74,4 @@ def register(application):
     注册动态响应消息处理器。
     Registers the dynamic response message handler.
     """
-    application.add_handler(
-        MessageHandler(filters.TEXT & ~filters.COMMAND, handle_dynamic_responses)
-    )
+    application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_dynamic_responses))

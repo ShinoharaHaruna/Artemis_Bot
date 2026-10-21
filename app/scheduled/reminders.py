@@ -20,9 +20,7 @@ async def send_reminder(context):
         return
     # 纯字符串拼接，无 I/O，无需 to_thread / Pure string building, no I/O
     message = drink_water_service.get_drink_water_message()
-    await context.bot.send_message(
-        chat_id=GROUP_CHAT_ID, text=message, parse_mode=ParseMode.HTML
-    )
+    await context.bot.send_message(chat_id=GROUP_CHAT_ID, text=message, parse_mode=ParseMode.HTML)
 
 
 async def off_work_reminder(context):
@@ -35,9 +33,7 @@ async def off_work_reminder(context):
         return
     # 内部会调用天气 API（网络 I/O），放到线程执行 / Network I/O via weather API → to_thread
     message = await asyncio.to_thread(off_work_service.get_off_work_message)
-    await context.bot.send_message(
-        chat_id=GROUP_CHAT_ID, text=message, parse_mode=ParseMode.HTML
-    )
+    await context.bot.send_message(chat_id=GROUP_CHAT_ID, text=message, parse_mode=ParseMode.HTML)
 
 
 async def on_work_reminder(context):

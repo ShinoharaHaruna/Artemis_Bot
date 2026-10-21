@@ -68,11 +68,7 @@ def _build_timer_section(context: CallbackContext, tz: pytz.timezone) -> str:
         elapsed = now - localized_start
         formatted_elapsed = _format_timedelta(elapsed)
         start_str = localized_start.strftime("%Y-%m-%d %H:%M:%S %Z")
-        return (
-            "- 状态：运行中\n"
-            f"- 开始时间：{start_str}\n"
-            f"- 已运行：{formatted_elapsed}"
-        )
+        return f"- 状态：运行中\n- 开始时间：{start_str}\n- 已运行：{formatted_elapsed}"
     return "- 状态：运行中 (开始时间缺失)"
 
 

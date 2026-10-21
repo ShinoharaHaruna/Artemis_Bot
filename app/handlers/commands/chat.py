@@ -28,9 +28,7 @@ async def chat_command(update: Update, context: CallbackContext):
         return
 
     prompt = " ".join(context.args)
-    response = await asyncio.to_thread(
-        llm_service.get_response, prompt, DEFAULT_SYSTEM_PROMPT
-    )
+    response = await asyncio.to_thread(llm_service.get_response, prompt, DEFAULT_SYSTEM_PROMPT)
     await update.message.reply_text(response)
 
 

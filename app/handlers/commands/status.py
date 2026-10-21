@@ -121,12 +121,12 @@ def _build_jobs_section(context: CallbackContext, tz: pytz.timezone) -> str:
     return "\n".join(lines)
 
 
-def status_handler(update: Update, context: CallbackContext):
+async def status_handler(update: Update, context: CallbackContext):
     """
     处理 /status 命令，展示功能状态，仅限 MASTER 使用。
     Handle /status command, show feature status, restricted to MASTER.
     """
-    if not require_master(update):
+    if not await require_master(update):
         return
 
     tz = pytz.timezone(TIMEZONE)
@@ -141,12 +141,12 @@ def status_handler(update: Update, context: CallbackContext):
         f"{jobs_section}"
     )
 
-    context.bot.send_message(chat_id=update.effective_chat.id, text=report)
+    await context.bot.send_message(chat_id=update.effective_chat.id, text=report)
 
 
-def register(dispatcher):
+def register(application):
     """
     注册 /status 命令处理器。
     Register the /status command handler.
     """
-    dispatcher.add_handler(CommandHandler("status", status_handler))
+    application.add_handler(CommandHandler("status", status_handler))

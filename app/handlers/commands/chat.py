@@ -1,3 +1,5 @@
+import asyncio
+
 from telegram import Update
 from telegram.ext import CallbackContext, CommandHandler
 
@@ -8,31 +10,33 @@ from app.handlers.permissions import require_authorized
 DEFAULT_SYSTEM_PROMPT = "你是阿尔忒弥斯，是群组的月神，并且你能回答群组成员的话。"
 
 
-def chat_command(update: Update, context: CallbackContext):
+async def chat_command(update: Update, context: CallbackContext):
     """
     处理 /chat 命令，与 LLM 进行交互。
     Handles the /chat command to interact with the LLM.
     """
-    if not require_authorized(update, context):
+    if not await require_authorized(update, context):
         return
 
     llm_service = context.bot_data.get("llm_service")
     if not llm_service:
-        update.message.reply_text("LLM 服务未配置，请联系管理员。")
+        await update.message.reply_text("LLM 服务未配置，请联系管理员。")
         return
 
     if not context.args:
-        update.message.reply_text("请在 /chat 命令后输入您想说的话。")
+        await update.message.reply_text("请在 /chat 命令后输入您想说的话。")
         return
 
     prompt = " ".join(context.args)
-    response = llm_service.get_response(prompt, system_prompt=DEFAULT_SYSTEM_PROMPT)
-    update.message.reply_text(response)
+    response = await asyncio.to_thread(
+        llm_service.get_response, prompt, DEFAULT_SYSTEM_PROMPT
+    )
+    await update.message.reply_text(response)
 
 
-def register(dispatcher):
+def register(application):
     """
     注册 chat 命令处理器。
     Registers the chat command handler.
     """
-    dispatcher.add_handler(CommandHandler("chat", chat_command))
+    application.add_handler(CommandHandler("chat", chat_command))

@@ -1,3 +1,5 @@
+import asyncio
+
 from telegram.ext import CommandHandler
 
 from app.handlers.permissions import require_authorized
@@ -56,22 +58,22 @@ REMAKE_PROMPT = """
 """
 
 
-def remake_command(update, context):
+async def remake_command(update, context):
     """处理 /remake 命令，生成一个随机的人生故事。"""
     # handle /remake command, generate a random life story
-    if not require_authorized(update, context):
+    if not await require_authorized(update, context):
         return
 
     llm_service = context.bot_data.get("llm_service")
     if not llm_service:
-        context.bot.send_message(
+        await context.bot.send_message(
             chat_id=update.effective_chat.id,
             text="LLM 服务未配置，请联系管理员。",
             reply_to_message_id=update.message.message_id,
         )
         return
 
-    context.bot.send_message(
+    await context.bot.send_message(
         chat_id=update.effective_chat.id,
         text="正在为您生成新的人生，请稍候...",
         reply_to_message_id=update.message.message_id,
@@ -79,18 +81,18 @@ def remake_command(update, context):
 
     # The old code sent this prompt as a system message; passing it as the
     # user prompt is provider-agnostic.
-    story = llm_service.get_response(prompt=REMAKE_PROMPT)
+    story = await asyncio.to_thread(llm_service.get_response, REMAKE_PROMPT)
 
     # 不使用 parse_mode="Markdown"：LLM 输出常含未闭合标记会破坏解析。
     # Dropped the old parse_mode — LLM output breaks Markdown parsing often.
-    context.bot.send_message(
+    await context.bot.send_message(
         chat_id=update.effective_chat.id,
         text=story,
         reply_to_message_id=update.message.message_id,
     )
 
 
-def register(dispatcher):
+def register(application):
     """注册 /remake 命令处理器。"""
     # register /remake command handler
-    dispatcher.add_handler(CommandHandler("remake", remake_command))
+    application.add_handler(CommandHandler("remake", remake_command))

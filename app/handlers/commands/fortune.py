@@ -52,12 +52,12 @@ def get_gua():
     return upper_gua, lower_gua, shichen, dongyao
 
 
-def handle_fortune_message(bot, chat_id, message_id):
+async def handle_fortune_message(bot, chat_id, message_id):
     """处理算卦消息。"""
     # handle fortune message
     upper_gua, lower_gua, shichen, dongyao = get_gua()
     response = f"求得复卦：上{upper_gua}下{lower_gua}，于{shichen[0]}时生，动爻为第{dongyao}爻。"
-    bot.send_message(
+    await bot.send_message(
         chat_id=chat_id,
         text=response,
         parse_mode="HTML",
@@ -65,18 +65,18 @@ def handle_fortune_message(bot, chat_id, message_id):
     )
 
 
-def fortune_callback(context):
+async def fortune_callback(context):
     """算卦任务回调，发送卦象结果。"""
     # callback for the fortune job, sends the gua result
-    chat_id = context.job.context["chat_id"]
-    message_id = context.job.context["message_id"]
-    handle_fortune_message(context.bot, chat_id, message_id)
+    chat_id = context.job.data["chat_id"]
+    message_id = context.job.data["message_id"]
+    await handle_fortune_message(context.bot, chat_id, message_id)
 
 
-def tell_fortune(update, context):
+async def tell_fortune(update, context):
     """处理 /suangua 命令。"""
     # handle /suangua command
-    context.bot.send_message(
+    await context.bot.send_message(
         chat_id=update.effective_chat.id,
         text="静心，想好问题，求得卦象。",
         parse_mode="HTML",
@@ -87,7 +87,7 @@ def tell_fortune(update, context):
     context.job_queue.run_once(
         fortune_callback,
         6,
-        context={
+        data={
             "chat_id": update.effective_chat.id,
             "message_id": update.message.message_id,
         },
@@ -95,7 +95,7 @@ def tell_fortune(update, context):
     )
 
 
-def register(dispatcher):
+def register(application):
     """注册 /suangua 命令处理器。"""
     # register /suangua command handler
-    dispatcher.add_handler(CommandHandler("suangua", tell_fortune))
+    application.add_handler(CommandHandler("suangua", tell_fortune))

@@ -3,7 +3,7 @@ import html
 from telegram.ext import CommandHandler
 
 
-def list_help(update, context):
+async def list_help(update, context):
     """显示帮助信息。"""
     # display help message
     help_message = """
@@ -38,7 +38,7 @@ def list_help(update, context):
 
     escaped_help_message = html.escape(help_message).replace("&lt;b&gt;", "<b>").replace("&lt;/b&gt;", "</b>")
 
-    context.bot.send_message(
+    await context.bot.send_message(
         chat_id=update.effective_chat.id,
         text=escaped_help_message,
         parse_mode="HTML",
@@ -46,7 +46,7 @@ def list_help(update, context):
     )
 
 
-def register(dispatcher):
+def register(application):
     """注册 /help 命令处理器。"""
     # register /help command handler
-    dispatcher.add_handler(CommandHandler("help", list_help))
+    application.add_handler(CommandHandler("help", list_help))

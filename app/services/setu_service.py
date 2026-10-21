@@ -1,3 +1,5 @@
+import asyncio
+
 import requests
 
 
@@ -32,12 +34,14 @@ class SetuService:
             pass
         return None
 
-    def send_setu(self, update, context):
+    async def send_setu(self, update, context):
         """
         发送一张涩图。
         Sends a setu image.
         """
-        image_url = self.get_setu_url()
+        # requests 网络 I/O → to_thread，避免阻塞事件循环
+        # requests network I/O → to_thread, to avoid blocking the event loop
+        image_url = await asyncio.to_thread(self.get_setu_url)
         if image_url:
             # MarkdownV2 无法解析 `||...||` 剧透语法且 `~` 为保留字符，故使用 HTML。
             # `||...||` is not valid MarkdownV2 and `~` is a reserved char, so use HTML.
@@ -46,6 +50,6 @@ class SetuService:
                 f'<a href="{image_url}">又看涩图！那，那……那就给你吧~</a>'
                 f"</span>"
             )
-            update.message.reply_text(text, parse_mode="HTML")
+            await update.message.reply_text(text, parse_mode="HTML")
         else:
-            update.message.reply_text("抱歉，获取涩图失败，请稍后再试。")
+            await update.message.reply_text("抱歉，获取涩图失败，请稍后再试。")

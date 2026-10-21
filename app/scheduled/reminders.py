@@ -1,13 +1,14 @@
+import asyncio
 from datetime import time
 
 import pytz
-from telegram import ParseMode
+from telegram.constants import ParseMode
 from telegram.ext import JobQueue
 
 from app.core.config import GROUP_CHAT_ID, TIMEZONE
 
 
-def send_reminder(context):
+async def send_reminder(context):
     """
     发送喝水提醒。
     Sends a drink water reminder.
@@ -17,13 +18,14 @@ def send_reminder(context):
         # 可以选择在这里记录一个错误，但为了简单起见，我们暂时跳过
         # You could log an error here, but for simplicity, we'll skip it for now
         return
+    # 纯字符串拼接，无 I/O，无需 to_thread / Pure string building, no I/O
     message = drink_water_service.get_drink_water_message()
-    context.bot.send_message(
+    await context.bot.send_message(
         chat_id=GROUP_CHAT_ID, text=message, parse_mode=ParseMode.HTML
     )
 
 
-def off_work_reminder(context):
+async def off_work_reminder(context):
     """
     发送下班提醒。
     Sends an off-work reminder.
@@ -31,25 +33,27 @@ def off_work_reminder(context):
     off_work_service = context.bot_data.get("off_work_service")
     if not off_work_service:
         return
-    message = off_work_service.get_off_work_message()
-    context.bot.send_message(
+    # 内部会调用天气 API（网络 I/O），放到线程执行 / Network I/O via weather API → to_thread
+    message = await asyncio.to_thread(off_work_service.get_off_work_message)
+    await context.bot.send_message(
         chat_id=GROUP_CHAT_ID, text=message, parse_mode=ParseMode.HTML
     )
 
 
-def on_work_reminder(context):
+async def on_work_reminder(context):
     """
     发送上班提醒。
     Sends an on-work reminder.
     """
     one_word_service = context.bot_data.get("one_word_service")
     if one_word_service:
-        quote = one_word_service.get_one_word()
+        # requests 网络 I/O → to_thread / requests network I/O → to_thread
+        quote = await asyncio.to_thread(one_word_service.get_one_word)
         text = f"新的一天，新的开始！上班加油！\n\n今日一言：{quote}"
     else:
         text = "新的一天，新的开始！上班加油！"
 
-    context.bot.send_message(chat_id=GROUP_CHAT_ID, text=text)
+    await context.bot.send_message(chat_id=GROUP_CHAT_ID, text=text)
 
 
 def schedule_reminders(job_queue: JobQueue):
@@ -58,7 +62,7 @@ def schedule_reminders(job_queue: JobQueue):
     Schedules all reminder jobs.
 
     Args:
-        job_queue (JobQueue): a job queue instance from the updater.
+        job_queue (JobQueue): a job queue instance from the application.
     """
     tz = pytz.timezone(TIMEZONE)
 

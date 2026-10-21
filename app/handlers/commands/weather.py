@@ -1,26 +1,28 @@
+import asyncio
 from datetime import datetime, time, timedelta
 
 import pytz
-from telegram import ParseMode, Update
+from telegram import Update
+from telegram.constants import ParseMode
 from telegram.ext import CallbackContext, CommandHandler
 
 from app.core.config import TIMEZONE
 
 
-def weather_command(update: Update, context: CallbackContext):
+async def weather_command(update: Update, context: CallbackContext):
     """
     处理 /weather 命令，发送当前天气信息。
     Handles the /weather command, sending current weather information.
     """
     weather_service = context.bot_data.get("weather_service")
     if not weather_service:
-        update.message.reply_text("天气服务未初始化，请联系管理员。")
+        await update.message.reply_text("天气服务未初始化，请联系管理员。")
         return
 
     try:
-        weather_info = weather_service.get_weather()
+        weather_info = await asyncio.to_thread(weather_service.get_weather)
     except Exception as e:
-        update.message.reply_text(f"抱歉，获取当前天气信息失败: {e}")
+        await update.message.reply_text(f"抱歉，获取当前天气信息失败: {e}")
         return
 
     text = (
@@ -32,7 +34,7 @@ def weather_command(update: Update, context: CallbackContext):
         f"湿度：{weather_info['humidity']:.0f} %\n"
         f"风速：{weather_info['wind_speed']:.1f} m/s"
     )
-    update.message.reply_text(text, parse_mode=ParseMode.HTML)
+    await update.message.reply_text(text, parse_mode=ParseMode.HTML)
 
     # 附加提醒 / Additional reminders
     feels_like = weather_info["feels_like"]
@@ -48,23 +50,23 @@ def weather_command(update: Update, context: CallbackContext):
     elif feels_like < 5:
         attach_info = "而家好凍㗎（"
     if attach_info:
-        update.message.reply_text(attach_info)
+        await update.message.reply_text(attach_info)
 
 
-def forecast_command(update: Update, context: CallbackContext):
+async def forecast_command(update: Update, context: CallbackContext):
     """
     处理 /forecast 命令，发送天气预报。
     Handles the /forecast command, sending the weather forecast.
     """
     weather_service = context.bot_data.get("weather_service")
     if not weather_service:
-        update.message.reply_text("天气服务未初始化，请联系管理员。")
+        await update.message.reply_text("天气服务未初始化，请联系管理员。")
         return
 
     try:
-        forecast_info = weather_service.get_forecast()
+        forecast_info = await asyncio.to_thread(weather_service.get_forecast)
     except Exception as e:
-        update.message.reply_text(f"抱歉，获取天气预报失败: {e}")
+        await update.message.reply_text(f"抱歉，获取天气预报失败: {e}")
         return
 
     timezone = pytz.timezone(TIMEZONE)
@@ -84,12 +86,12 @@ def forecast_command(update: Update, context: CallbackContext):
                 f"湿度：{forecast['main']['humidity']:.0f} %\n"
                 f"风速：{forecast['wind']['speed']:.1f} m/s"
             )
-            update.message.reply_text(text, parse_mode=ParseMode.HTML)
+            await update.message.reply_text(text, parse_mode=ParseMode.HTML)
             return
 
-    update.message.reply_text("抱歉，未能找到明天早上8点的天气预报。")
+    await update.message.reply_text("抱歉，未能找到明天早上8点的天气预报。")
 
 
-def register(dispatcher):
-    dispatcher.add_handler(CommandHandler("weather", weather_command))
-    dispatcher.add_handler(CommandHandler("forecast", forecast_command))
+def register(application):
+    application.add_handler(CommandHandler("weather", weather_command))
+    application.add_handler(CommandHandler("forecast", forecast_command))

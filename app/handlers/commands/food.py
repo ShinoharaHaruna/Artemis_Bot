@@ -1,3 +1,4 @@
+import asyncio
 import html
 import urllib.parse as urlparse
 
@@ -87,7 +88,7 @@ def get_food_info(keyword):
     )
 
 
-def handle_basic_info(
+async def handle_basic_info(
     bot, chat_id, message_id, summary, food_description, calorie_description
 ):
     """处理基本信息并发送。"""
@@ -105,7 +106,7 @@ def handle_basic_info(
 <b>营养摘要</b>: {mass_info}
 <b>详细信息链接</b>: {html.escape(summary['food_url'])}
 """
-    bot.send_message(
+    await bot.send_message(
         chat_id=chat_id,
         text=text_html,
         parse_mode="HTML",
@@ -113,21 +114,21 @@ def handle_basic_info(
     )
 
 
-def food_command(update, context):
+async def food_command(update, context):
     """处理 /food 命令。"""
     # handle /food command
     if not context.args:
-        update.message.reply_text("请提供食物名称。用法：/food <食物名称>")
+        await update.message.reply_text("请提供食物名称。用法：/food <食物名称>")
         return
     keyword = " ".join(context.args)
-    summary, food_description, calorie_description = get_food_info(
-        urlparse.quote(keyword, safe="")
+    summary, food_description, calorie_description = await asyncio.to_thread(
+        get_food_info, urlparse.quote(keyword, safe="")
     )
     if not summary:
-        update.message.reply_text(f"找不到关于“{keyword}”的信息。")
+        await update.message.reply_text(f"找不到关于“{keyword}”的信息。")
         return
 
-    handle_basic_info(
+    await handle_basic_info(
         context.bot,
         update.effective_chat.id,
         update.message.message_id,
@@ -137,7 +138,7 @@ def food_command(update, context):
     )
 
 
-def register(dispatcher):
+def register(application):
     """注册 /food 命令处理器。"""
     # register /food command handler
-    dispatcher.add_handler(CommandHandler("food", food_command))
+    application.add_handler(CommandHandler("food", food_command))

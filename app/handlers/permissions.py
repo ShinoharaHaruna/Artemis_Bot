@@ -18,7 +18,7 @@ def is_authorized(update) -> bool:
     return is_master(update)
 
 
-def require_master(update, silent: bool = False) -> bool:
+async def require_master(update, silent: bool = False) -> bool:
     """
     要求 MASTER 权限，拒绝时回复提示（或静默返回）。
     Require master; on denial reply with the notice (or stay silent).
@@ -26,18 +26,18 @@ def require_master(update, silent: bool = False) -> bool:
     if is_master(update):
         return True
     if not silent and update.message is not None:
-        update.message.reply_text("该命令仅限管理员使用。")
+        await update.message.reply_text("该命令仅限管理员使用。")
     return False
 
 
-def require_authorized(update, context) -> bool:
+async def require_authorized(update, context) -> bool:
     """
     要求 MASTER 或指定群组权限，拒绝时回复提示。
     Require master-or-group; on denial send the notice to the chat.
     """
     if is_authorized(update):
         return True
-    context.bot.send_message(
+    await context.bot.send_message(
         chat_id=update.effective_chat.id,
         text="抱歉，此功能仅限特定群组或管理员使用。",
         reply_to_message_id=update.message.message_id if update.message else None,

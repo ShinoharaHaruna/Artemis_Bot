@@ -39,7 +39,13 @@ class SetuService:
         """
         image_url = self.get_setu_url()
         if image_url:
-            text = f"||[又看涩图！那，那……那就给你吧~]({image_url})||"
-            update.message.reply_text(text, parse_mode="MarkdownV2")
+            # MarkdownV2 无法解析 `||...||` 剧透语法且 `~` 为保留字符，故使用 HTML。
+            # `||...||` is not valid MarkdownV2 and `~` is a reserved char, so use HTML.
+            text = (
+                f'<span class="tg-spoiler">'
+                f'<a href="{image_url}">又看涩图！那，那……那就给你吧~</a>'
+                f"</span>"
+            )
+            update.message.reply_text(text, parse_mode="HTML")
         else:
             update.message.reply_text("抱歉，获取涩图失败，请稍后再试。")

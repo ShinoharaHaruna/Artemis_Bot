@@ -61,6 +61,3 @@ class WeatherService:
         data = response.json()
         return data["list"]
 
-
-# 创建一个单例 / Create a singleton instance
-weather_service = WeatherService()

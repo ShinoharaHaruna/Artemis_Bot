@@ -1,5 +1,5 @@
+import atexit
 import logging
-import signal
 import threading
 from datetime import datetime
 
@@ -87,19 +87,20 @@ def main():
     web_thread.daemon = True
     web_thread.start()
 
-    # 设置信号处理器用于优雅退出
-    # Set up signal handler for graceful shutdown
-    def signal_handler(sig, frame):
-        logger.info("Received shutdown signal, notifying master...")
+    # PTB 的 updater.idle() 会注册自己的信号处理器并覆盖我们设置的，
+    # 因此改用 atexit：优雅停止完成后、解释器退出时通知 master。
+    # PTB's updater.idle() registers its own signal handlers and would
+    # overwrite ours, so notify the master via atexit instead — it runs
+    # after the graceful stop completes, at interpreter exit.
+    def _notify_shutdown():
+        logger.info("Bot is shutting down, notifying master...")
         shutdown_time = datetime.now(pytz.timezone(TIMEZONE))
         send_message_to_master(
             f"🛑 Bot 正在关闭\n"
             f"关闭时间: {shutdown_time.strftime('%Y-%m-%d %H:%M:%S %Z')}"
         )
-        exit(0)
 
-    signal.signal(signal.SIGINT, signal_handler)
-    signal.signal(signal.SIGTERM, signal_handler)
+    atexit.register(_notify_shutdown)
 
     # 运行 Bot 并传递 bot_data
     # Run the Bot and pass bot_data

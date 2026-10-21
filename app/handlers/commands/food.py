@@ -1,4 +1,5 @@
 import urllib.parse as urlparse
+
 import requests
 from bs4 import BeautifulSoup, Tag
 from telegram.ext import CommandHandler
@@ -14,9 +15,7 @@ def get_food_info(keyword):
     """从 fatsecret.cn 获取食物信息。"""
     # get food info from fatsecret.cn
     base_url = "https://www.fatsecret.cn"
-    url = "https://www.fatsecret.cn/%E7%83%AD%E9%87%8F%E8%90%A5%E5%85%BB/search?q={}".format(
-        keyword
-    )
+    url = f"https://www.fatsecret.cn/%E7%83%AD%E9%87%8F%E8%90%A5%E5%85%BB/search?q={keyword}"
     headers = {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
         "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36"

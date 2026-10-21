@@ -1,6 +1,8 @@
-import pkgutil
 import importlib
+import pkgutil
+
 from telegram.ext import Dispatcher
+
 
 def register_all_message_handlers(dispatcher: Dispatcher):
     """

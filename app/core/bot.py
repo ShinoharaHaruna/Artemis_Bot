@@ -1,11 +1,13 @@
 import logging
-import pytz
 from datetime import datetime
+
+import pytz
 from telegram.ext import Updater
+
 from app.core.config import API_TOKEN, MASTER_ID, TIMEZONE
 from app.handlers.commands import register_all_commands
-from app.handlers.messages import register_all_message_handlers
 from app.handlers.error import register as register_error_handler
+from app.handlers.messages import register_all_message_handlers
 from app.scheduled.reminders import schedule_reminders
 
 logger = logging.getLogger(__name__)

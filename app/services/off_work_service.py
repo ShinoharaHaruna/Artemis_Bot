@@ -1,7 +1,9 @@
 from datetime import datetime, time, timedelta
+
 import pytz
-from app.services.weather_service import WeatherService
+
 from app.core.config import TIMEZONE
+from app.services.weather_service import WeatherService
 
 
 class OffWorkService:

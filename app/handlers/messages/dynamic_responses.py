@@ -1,5 +1,7 @@
 import random
+
 from telegram.ext import Filters, MessageHandler
+
 from app.core.config import BOT_NAME, MASTER_ID, MISS_MACAU_ID
 
 

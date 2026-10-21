@@ -1,7 +1,9 @@
-import pytz
 from datetime import datetime, time, timedelta
-from telegram import Update, ParseMode
+
+import pytz
+from telegram import ParseMode, Update
 from telegram.ext import CallbackContext, CommandHandler
+
 from app.core.config import TIMEZONE
 
 
@@ -74,7 +76,8 @@ def forecast_command(update: Update, context: CallbackContext):
         if abs(forecast["dt"] - target_ts) < 1800:  # 寻找最接近早上8点的数据 (30分钟内)
             text = (
                 f"群u们🥳！<b>明天早上 8 点的天气🌤️是 {forecast['weather'][0]['description']}，"
-                f"体感温度 {forecast['main']['feels_like']:.1f} ℃，湿度 {forecast['main']['humidity']:.0f} %</b>，详细情报如下捏！\n"
+                f"体感温度 {forecast['main']['feels_like']:.1f} ℃，湿度 "
+                f"{forecast['main']['humidity']:.0f} %</b>，详细情报如下捏！\n"
                 f"天气：{forecast['weather'][0]['description']}\n"
                 f"温度：{forecast['main']['temp']:.1f} ℃\n"
                 f"体感温度：{forecast['main']['feels_like']:.1f} ℃\n"

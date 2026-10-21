@@ -2,7 +2,7 @@ import requests
 from telegram.ext import CommandHandler
 
 from app.core import config
-from app.core.config import MASTER_ID, GROUP_CHAT_ID
+from app.core.config import GROUP_CHAT_ID, MASTER_ID
 
 # DEPRECATED: OpenAI DALL·E image API 已被官方弃用，且功能所有者已不再使用 OpenAI
 # DEPRECATED: the OpenAI DALL·E image API is deprecated and the feature owner dropped OpenAI.

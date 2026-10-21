@@ -1,5 +1,4 @@
 from datetime import datetime
-from typing import Optional
 
 import pytz
 from telegram import Update
@@ -17,7 +16,7 @@ JOB_LABEL_OVERRIDES = {
 }
 
 
-def _localize_datetime(dt: Optional[datetime], tz: pytz.timezone) -> Optional[datetime]:
+def _localize_datetime(dt: datetime | None, tz: pytz.timezone) -> datetime | None:
     """
     将 datetime 对象转化为目标时区。
     Normalize datetime objects into target timezone.

@@ -1,4 +1,5 @@
 import random
+
 import yaml
 
 
@@ -21,7 +22,7 @@ class AnswerbookService:
         Loads answers data from a YAML file.
         """
         try:
-            with open(path, "r", encoding="utf-8") as f:
+            with open(path, encoding="utf-8") as f:
                 data = yaml.safe_load(f)
                 return data.get("answers", [])
         except FileNotFoundError:

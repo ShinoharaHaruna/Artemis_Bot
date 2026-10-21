@@ -1,4 +1,5 @@
 import requests
+
 from app.core.config import WEATHER_API_KEY, WEATHER_LAT, WEATHER_LON
 
 

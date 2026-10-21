@@ -1,21 +1,23 @@
 import logging
-import pytz
 import signal
 import threading
 from datetime import datetime
-from app.core.bot import run_bot
-from app.core.web import web_app
-from app.core.config import TIMEZONE, MASTER_ID, API_TOKEN
-from app.services.answerbook_service import AnswerbookService
-from app.services.one_word_service import OneWordService
-from app.services.canned_response_service import CannedResponseService
-from app.services.setu_service import SetuService
-from app.services.weather_service import WeatherService
-from app.services.off_work_service import OffWorkService
-from app.services.drink_water_service import DrinkWaterService
-from app.services.tarot_service import TarotService
-from app.services.llm import create_llm_service
+
+import pytz
 import telegram
+
+from app.core.bot import run_bot
+from app.core.config import API_TOKEN, MASTER_ID, TIMEZONE
+from app.core.web import web_app
+from app.services.answerbook_service import AnswerbookService
+from app.services.canned_response_service import CannedResponseService
+from app.services.drink_water_service import DrinkWaterService
+from app.services.llm import create_llm_service
+from app.services.off_work_service import OffWorkService
+from app.services.one_word_service import OneWordService
+from app.services.setu_service import SetuService
+from app.services.tarot_service import TarotService
+from app.services.weather_service import WeatherService
 
 logger = logging.getLogger(__name__)
 

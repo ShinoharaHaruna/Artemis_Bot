@@ -6,7 +6,7 @@ def load_config():
     从 config.yaml 加载配置。
     Load configuration from config.yaml.
     """
-    with open("config.yaml", "r", encoding="utf-8") as file:
+    with open("config.yaml", encoding="utf-8") as file:
         config = yaml.safe_load(file)
     return config
 

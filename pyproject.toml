@@ -11,3 +11,21 @@ dependencies = [
     "beautifulsoup4",
     "flask>=3.1.2",
 ]
+
+[tool.ruff]
+target-version = "py311"
+line-length = 120
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+
+[tool.ruff.lint.per-file-ignores]
+# DEPRECATED modules kept for history; also long CJK prompt literals
+"app/handlers/commands/draw.py" = ["E501"]
+"app/handlers/commands/scholar.py" = ["E501"]
+"app/handlers/commands/remake.py" = ["E501"]
+
+[dependency-groups]
+dev = [
+    "ruff>=0.17.1",
+]

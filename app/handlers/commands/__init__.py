@@ -1,6 +1,7 @@
+import importlib
 import logging
 import pkgutil
-import importlib
+
 from telegram.ext import Dispatcher
 
 logger = logging.getLogger(__name__)

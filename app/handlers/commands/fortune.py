@@ -1,7 +1,9 @@
 import random
 from datetime import datetime
+
 import pytz
 from telegram.ext import CommandHandler
+
 from app.core.config import TIMEZONE
 
 GUA = {1: "乾", 2: "兑", 3: "离", 4: "震", 5: "巽", 6: "坎", 7: "艮", 8: "坤"}

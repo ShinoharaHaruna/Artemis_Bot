@@ -1,5 +1,4 @@
 import random
-from time import sleep
 from datetime import datetime
 import pytz
 from telegram.ext import CommandHandler
@@ -64,6 +63,14 @@ def handle_fortune_message(bot, chat_id, message_id):
     )
 
 
+def fortune_callback(context):
+    """算卦任务回调，发送卦象结果。"""
+    # callback for the fortune job, sends the gua result
+    chat_id = context.job.context["chat_id"]
+    message_id = context.job.context["message_id"]
+    handle_fortune_message(context.bot, chat_id, message_id)
+
+
 def tell_fortune(update, context):
     """处理 /suangua 命令。"""
     # handle /suangua command
@@ -73,11 +80,16 @@ def tell_fortune(update, context):
         parse_mode="HTML",
         reply_to_message_id=update.message.message_id,
     )
-    sleep(6)
-    handle_fortune_message(
-        context.bot,
-        update.effective_chat.id,
-        update.message.message_id,
+    # 6 秒后通过任务队列发送卦象，避免阻塞调度线程
+    # schedule the gua result via job queue to avoid blocking the dispatcher
+    context.job_queue.run_once(
+        fortune_callback,
+        6,
+        context={
+            "chat_id": update.effective_chat.id,
+            "message_id": update.message.message_id,
+        },
+        name=f"fortune_{update.effective_chat.id}_{update.message.message_id}",
     )
 
 

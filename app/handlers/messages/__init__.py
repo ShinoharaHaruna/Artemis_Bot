@@ -1,10 +1,10 @@
 import importlib
 import pkgutil
 
-from telegram.ext import Dispatcher
+from telegram.ext import Application
 
 
-def register_all_message_handlers(dispatcher: Dispatcher):
+def register_all_message_handlers(application: Application):
     """
     自动发现并注册所有消息处理器。
     Automatically discovers and registers all message handlers.
@@ -16,4 +16,4 @@ def register_all_message_handlers(dispatcher: Dispatcher):
         module = importlib.import_module(f".{module_name}", package_name)
         
         if hasattr(module, 'register') and callable(module.register):
-            module.register(dispatcher)
+            module.register(application)

@@ -2,12 +2,12 @@ import importlib
 import logging
 import pkgutil
 
-from telegram.ext import Dispatcher
+from telegram.ext import Application
 
 logger = logging.getLogger(__name__)
 
 
-def register_all_commands(dispatcher: Dispatcher):
+def register_all_commands(application: Application):
     """
     自动发现并注册所有命令处理器。
     Automatically discovers and registers all command handlers.
@@ -31,4 +31,4 @@ def register_all_commands(dispatcher: Dispatcher):
         # 检查模块中是否有 register 函数，如有则调用
         # Check if the module has a 'register' function, and if so, call it
         if hasattr(module, "register") and callable(module.register):
-            module.register(dispatcher)
+            module.register(application)

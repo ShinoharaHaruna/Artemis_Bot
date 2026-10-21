@@ -1,3 +1,4 @@
+import asyncio
 import atexit
 import logging
 import threading
@@ -29,7 +30,7 @@ def send_message_to_master(message):
     """
     try:
         bot = telegram.Bot(token=API_TOKEN)
-        bot.send_message(chat_id=MASTER_ID, text=message)
+        asyncio.run(bot.send_message(chat_id=MASTER_ID, text=message))
     except Exception as e:
         logger.error(f"Failed to send message to master: {e}")
 

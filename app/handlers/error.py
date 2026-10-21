@@ -3,7 +3,8 @@ import json
 import logging
 import traceback
 
-from telegram import ParseMode, Update
+from telegram import Update
+from telegram.constants import ParseMode
 from telegram.ext import CallbackContext
 
 from app.core.config import MASTER_ID
@@ -13,12 +14,14 @@ from app.core.config import MASTER_ID
 logger = logging.getLogger(__name__)
 
 
-def error_handler(update: object, context: CallbackContext) -> None:
+async def error_handler(update: object, context: CallbackContext) -> None:
     """
     全局错误处理器。捕获所有未处理的异常，并向开发者发送通知。
     Global error handler. Catches all unhandled exceptions and sends a notification to the developer.
     """
     logger.error(msg="Exception while handling an update:", exc_info=context.error)
+    if context.error is None:
+        return
 
     # 格式化 traceback
     # Format the traceback
@@ -52,15 +55,15 @@ def error_handler(update: object, context: CallbackContext) -> None:
                 if newline > start:
                     end = newline + 1
             chunk = message[start:end]
-            context.bot.send_message(
+            await context.bot.send_message(
                 chat_id=MASTER_ID, text=chunk, parse_mode=ParseMode.HTML
             )
             start = end
 
 
-def register(dispatcher):
+def register(application):
     """
     注册错误处理器。
     Registers the error handler.
     """
-    dispatcher.add_error_handler(error_handler)
+    application.add_error_handler(error_handler)

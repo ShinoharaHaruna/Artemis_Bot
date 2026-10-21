@@ -108,7 +108,8 @@ def _build_jobs_section(context: CallbackContext, tz: pytz.timezone) -> str:
         return "- 暂无定时任务"
 
     lines = []
-    for job in sorted(jobs, key=lambda j: getattr(j, "next_t", None) or datetime.max):
+    max_t = datetime.max.replace(tzinfo=pytz.utc)
+    for job in sorted(jobs, key=lambda j: getattr(j, "next_t", None) or max_t):
         label = _derive_job_label(job)
         next_run = getattr(job, "next_t", None)
         localized_next = _localize_datetime(next_run, tz)

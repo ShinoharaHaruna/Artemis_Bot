@@ -14,3 +14,8 @@ Weather:
   # 经纬度
   LAT: XXXXXXXX
   LON: XXXXXXXX
+
+LLM:
+  # 服务提供商 / Provider. 可用值: openai；留空或不配置则禁用 LLM 功能
+  PROVIDER:
+  OPENAI_API_KEY: sk-XXXXXXXX

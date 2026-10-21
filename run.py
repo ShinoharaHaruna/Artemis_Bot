@@ -12,6 +12,8 @@ from app.services.setu_service import SetuService
 from app.services.weather_service import WeatherService
 from app.services.off_work_service import OffWorkService
 from app.services.drink_water_service import DrinkWaterService
+from app.services.tarot_service import TarotService
+from app.services.llm import create_llm_service
 import telegram
 
 
@@ -43,6 +45,9 @@ def main():
     weather_service = WeatherService()
     off_work_service = OffWorkService(weather_service=weather_service)
     drink_water_service = DrinkWaterService()
+    tarot_service = TarotService()
+    # 未配置 LLM 时返回 None，相关命令会提示未配置 / None when LLM is not configured
+    llm_service = create_llm_service()
 
     # 创建 bot_data 字典来存储服务
     # Create bot_data dictionary to store services
@@ -54,6 +59,8 @@ def main():
         "weather_service": weather_service,
         "off_work_service": off_work_service,
         "drink_water_service": drink_water_service,
+        "tarot_service": tarot_service,
+        "llm_service": llm_service,
     }
 
     # 在一个单独的线程中运行 Flask 应用

@@ -1,3 +1,4 @@
+import html
 import urllib.parse as urlparse
 
 import requests
@@ -91,17 +92,18 @@ def handle_basic_info(
 ):
     """处理基本信息并发送。"""
     # handle basic info and send
+    # 转义抓取的文本防止注入 / Escape scraped text to prevent injection
     mass_info = ""
     for t in summary:
         if "克" in summary[t]:
-            mass_info += f"\n        {t}: {summary[t]}"
+            mass_info += f"\n        {html.escape(t)}: {html.escape(summary[t])}"
     mass_info += "\n"
 
-    text_html = f"""<b>食物名称</b>: {summary['food_name']}
-<b>食物描述</b>: {food_description}
-<b>热量分布</b>: {calorie_description}
+    text_html = f"""<b>食物名称</b>: {html.escape(summary['food_name'])}
+<b>食物描述</b>: {html.escape(food_description)}
+<b>热量分布</b>: {html.escape(calorie_description)}
 <b>营养摘要</b>: {mass_info}
-<b>详细信息链接</b>: {summary['food_url']}
+<b>详细信息链接</b>: {html.escape(summary['food_url'])}
 """
     bot.send_message(
         chat_id=chat_id,

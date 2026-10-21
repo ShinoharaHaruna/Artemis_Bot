@@ -40,10 +40,20 @@ def error_handler(update: object, context: CallbackContext) -> None:
     # 将消息发送给开发者，如果消息太长则分段发送
     # Send the message to the developer, splitting it if it's too long
     if MASTER_ID:
-        for i in range(0, len(message), 4096):
+        start = 0
+        while start < len(message):
+            end = start + 4096
+            if end < len(message):
+                # 优先在换行符处切分，避免截断 HTML 标签或转义序列
+                # Prefer splitting at a newline to avoid cutting an HTML tag or escape sequence
+                newline = message.rfind("\n", start, end)
+                if newline > start:
+                    end = newline + 1
+            chunk = message[start:end]
             context.bot.send_message(
-                chat_id=MASTER_ID, text=message[i : i + 4096], parse_mode=ParseMode.HTML
+                chat_id=MASTER_ID, text=chunk, parse_mode=ParseMode.HTML
             )
+            start = end
 
 
 def register(dispatcher):

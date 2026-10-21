@@ -1,14 +1,11 @@
-import asyncio
-import atexit
 import logging
 import threading
 from datetime import datetime
 
 import pytz
-import telegram
 
 from app.core.bot import run_bot
-from app.core.config import API_TOKEN, MASTER_ID, TIMEZONE
+from app.core.config import TIMEZONE
 from app.core.web import web_app
 from app.services.answerbook_service import AnswerbookService
 from app.services.canned_response_service import CannedResponseService
@@ -21,18 +18,6 @@ from app.services.tarot_service import TarotService
 from app.services.weather_service import WeatherService
 
 logger = logging.getLogger(__name__)
-
-
-def send_message_to_master(message):
-    """
-    发送消息给 master。
-    Send a message to the master.
-    """
-    try:
-        bot = telegram.Bot(token=API_TOKEN)
-        asyncio.run(bot.send_message(chat_id=MASTER_ID, text=message))
-    except Exception as e:
-        logger.error(f"Failed to send message to master: {e}")
 
 
 def main():
@@ -88,23 +73,10 @@ def main():
     web_thread.daemon = True
     web_thread.start()
 
-    # PTB 的 updater.idle() 会注册自己的信号处理器并覆盖我们设置的，
-    # 因此改用 atexit：优雅停止完成后、解释器退出时通知 master。
-    # PTB's updater.idle() registers its own signal handlers and would
-    # overwrite ours, so notify the master via atexit instead — it runs
-    # after the graceful stop completes, at interpreter exit.
-    def _notify_shutdown():
-        logger.info("Bot is shutting down, notifying master...")
-        shutdown_time = datetime.now(pytz.timezone(TIMEZONE))
-        send_message_to_master(
-            f"🛑 Bot 正在关闭\n"
-            f"关闭时间: {shutdown_time.strftime('%Y-%m-%d %H:%M:%S %Z')}"
-        )
-
-    atexit.register(_notify_shutdown)
-
-    # 运行 Bot 并传递 bot_data
-    # Run the Bot and pass bot_data
+    # 运行 Bot 并传递 bot_data。启动/关闭通知由 Application 的
+    # post_init / post_shutdown 回调负责（在 PTB event loop 内执行）。
+    # Run the Bot and pass bot_data. Startup/shutdown notifications are
+    # handled by the Application's post_init / post_shutdown callbacks.
     run_bot(bot_data)
 
 

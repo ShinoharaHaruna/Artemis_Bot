@@ -19,9 +19,8 @@
 
 ~~因为真的很简单所以我觉得是个人都能指点一番我就不费力解释代码了。~~
 
-另外，没有使用v20的新API，总之就是老版顺手，就拿来用了，如果要`pip install`的话记得指定版本。
-
 > Update @ 2025-08-28：诈尸更新，之前土法手搓 Python 的代码确实很丑，现在狠狠重构了 😎
+> Update @ 2026-10-21：已迁移至 python-telegram-bot v22 异步 API，详见 `docs/development.md`。
 
 ## 人设
 
@@ -71,6 +70,16 @@
 11. **设置提醒**
     月神可以帮你设置提醒哦！只需要在私聊中输入`/reminder YYYYMMDDHHMM <提醒内容>`，月神就会在指定时间提醒你！
     例如：`/reminder 202508281930 去看电影`
+
+## 开发
+
+```bash
+uv sync                                 # 安装依赖
+uv run ruff check .                     # lint
+git config core.hooksPath .githooks     # 启用 pre-commit 自动格式化
+```
+
+项目结构、新增命令、LLM provider、deprecated 约定等见 [docs/development.md](docs/development.md)。
 
 ## 致谢
 

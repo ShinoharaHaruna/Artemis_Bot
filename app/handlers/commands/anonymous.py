@@ -3,19 +3,26 @@ from app.core.config import GROUP_CHAT_ID, MASTER_ID
 
 
 def admin_command(update, context):
+    """处理 /admin 命令。"""
+    # handle /admin command
     message = update.message
     if message.text is None:
         return
     if update.message.from_user.id != MASTER_ID:
         return
+    if not context.args:
+        message.reply_text("使用方法: /admin <消息>")
+        return
     context.bot.send_message(
         chat_id=GROUP_CHAT_ID,
-        text=message.text.replace("/admin ", ""),
+        text=" ".join(context.args),
         parse_mode="HTML",
     )
 
 
 def anonymous_command(update, context):
+    """处理 /anonymous 命令。"""
+    # handle /anonymous command
     message = update.message
     if message.text is None:
         return
@@ -28,9 +35,12 @@ def anonymous_command(update, context):
             text='私聊月神才可以匿名哦~发送"/anonymous + 消息"，即可匿名发送消息',
         )
         return
+    if not context.args:
+        message.reply_text("使用方法: /anonymous <消息>")
+        return
     context.bot.send_message(
         chat_id=GROUP_CHAT_ID,
-        text=f"匿名消息：{message.text.replace('/anonymous ', '')}",
+        text=f"匿名消息：{' '.join(context.args)}",
     )
 
 

@@ -4,7 +4,8 @@ import pytz
 from telegram import Update
 from telegram.ext import CallbackContext, CommandHandler
 
-from app.core.config import MASTER_ID, TIMEZONE
+from app.core.config import TIMEZONE
+from app.handlers.permissions import require_master
 
 # 任务标签映射，便于展示 / Job label mapping for better display
 JOB_LABEL_OVERRIDES = {
@@ -125,9 +126,7 @@ def status_handler(update: Update, context: CallbackContext):
     处理 /status 命令，展示功能状态，仅限 MASTER 使用。
     Handle /status command, show feature status, restricted to MASTER.
     """
-    user = update.effective_user
-    if not user or user.id != MASTER_ID:
-        update.message.reply_text("该命令仅限管理员使用。")
+    if not require_master(update):
         return
 
     tz = pytz.timezone(TIMEZONE)

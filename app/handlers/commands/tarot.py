@@ -1,11 +1,16 @@
 from telegram.ext import CommandHandler
 
+from app.handlers.permissions import require_authorized
+
 
 def tarot_command(update, context):
     """
     处理 /tarot 命令，执行塔罗牌占卜。
     Handles the /tarot command, performing a tarot reading.
     """
+    if not require_authorized(update, context):
+        return
+
     tarot_service = context.bot_data.get("tarot_service")
     llm_service = context.bot_data.get("llm_service")
 

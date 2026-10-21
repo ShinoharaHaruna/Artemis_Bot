@@ -1,6 +1,7 @@
 from telegram.ext import CommandHandler
 
-from app.core.config import GROUP_CHAT_ID, MASTER_ID
+from app.core.config import GROUP_CHAT_ID
+from app.handlers.permissions import require_master
 
 
 def admin_command(update, context):
@@ -9,7 +10,7 @@ def admin_command(update, context):
     message = update.message
     if message.text is None:
         return
-    if update.message.from_user.id != MASTER_ID:
+    if not require_master(update, silent=True):
         return
     if not context.args:
         message.reply_text("使用方法: /admin <消息>")

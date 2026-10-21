@@ -1,6 +1,6 @@
 from telegram.ext import CommandHandler
 
-from app.core.config import GROUP_CHAT_ID, MASTER_ID
+from app.handlers.permissions import require_authorized
 
 REMAKE_PROMPT = """
 您好 ChatGPT, 请扮演一个顶级 AI 文字游戏的 Terminal，Terminal 的工作是在 code environment 中思考。
@@ -59,12 +59,7 @@ REMAKE_PROMPT = """
 def remake_command(update, context):
     """处理 /remake 命令，生成一个随机的人生故事。"""
     # handle /remake command, generate a random life story
-    if update.message.from_user.id != MASTER_ID and update.effective_chat.id != GROUP_CHAT_ID:
-        context.bot.send_message(
-            chat_id=update.effective_chat.id,
-            text="抱歉，此功能仅限特定群组或管理员使用。",
-            reply_to_message_id=update.message.message_id,
-        )
+    if not require_authorized(update, context):
         return
 
     llm_service = context.bot_data.get("llm_service")

@@ -40,15 +40,19 @@ def handle_dynamic_responses(update, context):
     # Keyword-based responses
     if BOT_NAME in message.text and "你怎么看" in message.text and one_word_service:
         message.reply_text(one_word_service.get_one_word())
+        return
     elif "是吧" in message.text:
         message.reply_text("是啊")
+        return
     elif "谁问你了" in message.text:
         message.reply_html(
             '<a href="https://www.bilibili.com/video/BV1Gc411u7s5">他问的</a>，怎么了？'
         )
+        return
     elif ("来点色图" in message.text or "来点涩图" in message.text) and setu_service:
         setu_service.send_setu(update, context)
         message.reply_text("来叻~别让等待，成为遗憾（")
+        return
 
     # 概率性回复
     # Probabilistic responses

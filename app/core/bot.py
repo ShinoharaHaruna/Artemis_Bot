@@ -28,11 +28,11 @@ async def _post_init(application: Application) -> None:
         logger.error(f"Failed to send startup message to master: {e}")
 
 
-async def _post_shutdown(application: Application) -> None:
+async def _post_stop(application: Application) -> None:
     """
-    Application 停止后发送关闭通知给 master（在其 event loop 内执行，可用 await）。
-    Sends the shutdown notification to master after the Application stops
-    (runs inside its event loop, so await works).
+    Updater 停止后发送关闭通知给 master（此时 bot 的 HTTP client 仍可用）。
+    Sends the shutdown notification to master after the Updater stops
+    (the bot's HTTP client is still usable at this stage).
     """
     try:
         shutdown_time = datetime.now(pytz.timezone(TIMEZONE))
@@ -55,7 +55,7 @@ def run_bot(bot_data=None):
         Application.builder()
         .token(API_TOKEN)
         .post_init(_post_init)
-        .post_shutdown(_post_shutdown)
+        .post_stop(_post_stop)
         .build()
     )
 

@@ -1,3 +1,4 @@
+import logging
 import pytz
 from datetime import datetime
 from telegram.ext import Updater
@@ -6,6 +7,8 @@ from app.handlers.commands import register_all_commands
 from app.handlers.messages import register_all_message_handlers
 from app.handlers.error import register as register_error_handler
 from app.scheduled.reminders import schedule_reminders
+
+logger = logging.getLogger(__name__)
 
 
 def run_bot(bot_data=None):
@@ -49,6 +52,6 @@ def run_bot(bot_data=None):
             text=f"✅ Bot 启动成功\n启动时间: {start_time.strftime('%Y-%m-%d %H:%M:%S %Z')}",
         )
     except Exception as e:
-        print(f"Failed to send startup message to master: {e}")
+        logger.error(f"Failed to send startup message to master: {e}")
 
     updater.idle()

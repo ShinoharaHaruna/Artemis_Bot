@@ -1,6 +1,9 @@
+import logging
 import pkgutil
 import importlib
 from telegram.ext import Dispatcher
+
+logger = logging.getLogger(__name__)
 
 
 def register_all_commands(dispatcher: Dispatcher):
@@ -21,7 +24,7 @@ def register_all_commands(dispatcher: Dispatcher):
         # 跳过标记为已弃用的模块（保留代码但不注册）
         # Skip modules marked as deprecated (code kept but not registered)
         if getattr(module, "DEPRECATED", False):
-            print(f"Skipping deprecated command module: {module_name}")
+            logger.info(f"Skipping deprecated command module: {module_name}")
             continue
 
         # 检查模块中是否有 register 函数，如有则调用

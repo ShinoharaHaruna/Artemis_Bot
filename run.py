@@ -1,3 +1,4 @@
+import logging
 import pytz
 import signal
 import threading
@@ -16,6 +17,8 @@ from app.services.tarot_service import TarotService
 from app.services.llm import create_llm_service
 import telegram
 
+logger = logging.getLogger(__name__)
+
 
 def send_message_to_master(message):
     """
@@ -26,15 +29,21 @@ def send_message_to_master(message):
         bot = telegram.Bot(token=API_TOKEN)
         bot.send_message(chat_id=MASTER_ID, text=message)
     except Exception as e:
-        print(f"Failed to send message to master: {e}")
+        logger.error(f"Failed to send message to master: {e}")
 
 
 def main():
     """启动 Bot 并注入服务。"""
+    # 配置日志 / Configure logging
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    )
+
     # 设置并打印启动时间
     # Set and print the start time
     start_time = datetime.now(pytz.timezone(TIMEZONE))
-    print(f"Bot started at {start_time.strftime('%Y-%m-%d %H:%M:%S %Z')}")
+    logger.info(f"Bot started at {start_time.strftime('%Y-%m-%d %H:%M:%S %Z')}")
 
     # 初始化服务
     # Initialize services
@@ -79,7 +88,7 @@ def main():
     # 设置信号处理器用于优雅退出
     # Set up signal handler for graceful shutdown
     def signal_handler(sig, frame):
-        print("\nReceived shutdown signal, notifying master...")
+        logger.info("Received shutdown signal, notifying master...")
         shutdown_time = datetime.now(pytz.timezone(TIMEZONE))
         send_message_to_master(
             f"🛑 Bot 正在关闭\n"

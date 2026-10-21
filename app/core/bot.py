@@ -51,13 +51,7 @@ def run_bot(bot_data=None):
     """
     # 初始化 Application
     # Initialize the Application
-    app = (
-        Application.builder()
-        .token(API_TOKEN)
-        .post_init(_post_init)
-        .post_stop(_post_stop)
-        .build()
-    )
+    app = Application.builder().token(API_TOKEN).post_init(_post_init).post_stop(_post_stop).build()
 
     # 如果提供了 bot_data，则注入服务
     # If bot_data is provided, inject the services

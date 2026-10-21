@@ -18,6 +18,12 @@ def register_all_commands(dispatcher: Dispatcher):
         # 动态导入模块 / Dynamically import the module
         module = importlib.import_module(f".{module_name}", package_name)
 
+        # 跳过标记为已弃用的模块（保留代码但不注册）
+        # Skip modules marked as deprecated (code kept but not registered)
+        if getattr(module, "DEPRECATED", False):
+            print(f"Skipping deprecated command module: {module_name}")
+            continue
+
         # 检查模块中是否有 register 函数，如有则调用
         # Check if the module has a 'register' function, and if so, call it
         if hasattr(module, "register") and callable(module.register):

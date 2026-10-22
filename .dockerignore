@@ -1,0 +1,12 @@
+# Docker build context 排除项：密钥、本地环境、文档、历史不进 context
+# Exclusions for the Docker build context: secrets, local env, docs, history
+.git
+.venv
+__pycache__
+.pi
+config.yaml
+config.template.yaml
+bot.log
+*.md
+docs/
+.githooks/
